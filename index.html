@@ -1,613 +1,267 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>跑道竞速 — 跑步游戏 / 트랙 레이싱 — 달리기 게임</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#061223;
-      --panel: rgba(255,255,255,0.03);
-      --accent1:#3ddc84;
-      --accent2:#6ee7b7;
-      --muted:#9fb0bf;
-      --card:#071426;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:#eaf6f0;background:linear-gradient(180deg,#04111b 0%, #071428 60%);}
-    .app{display:flex;flex-direction:column;min-height:100vh;padding:18px;gap:14px}
-    header{display:flex;justify-content:space-between;align-items:center}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04241a}
-    h1{margin:0;font-size:18px}
-    .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
-
-    .main{display:flex;gap:14px;align-items:stretch;flex:1}
-    .left{flex:1;display:flex;flex-direction:column;gap:12px}
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 40px rgba(3,6,12,0.6)}
-    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .input{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eaf6f0;min-width:220px}
-    .btn{padding:9px 14px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#04241a;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(78,200,140,0.12)}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
-    .lang-note{font-size:13px;color:var(--muted)}
-
-    /* game area */
-    .game-area{display:flex;gap:12px;align-items:flex-start}
-    #gameCanvas{border-radius:12px;background:linear-gradient(180deg,#06202a,#02111a);display:block;box-shadow:inset 0 -20px 60px rgba(0,0,0,0.6)}
-    .sidebar{width:320px;min-width:260px;display:flex;flex-direction:column;gap:12px}
-
-    .leaderboard h3{margin:0 0 8px 0;color:#dff7ea}
-    .list{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto}
-    .item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
-    .rank{width:30px;text-align:center;font-weight:800;color:var(--accent1)}
-    .name{flex:1;padding-left:8px;font-weight:700;color:#eaf6f0}
-    .score{font-weight:800;color:#fff}
-
-    .hud{display:flex;gap:12px}
-    .stat{flex:1}
-    .stat .label{color:var(--muted);font-size:13px}
-    .stat .value{font-size:20px;font-weight:800;color:#fff;margin-top:4px}
-
-    footer{color:var(--muted);font-size:13px;text-align:center;margin-top:6px}
-
-    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(0deg, rgba(2,5,10,0.6), rgba(2,5,10,0.6));backdrop-filter:blur(4px)}
-    .modal{width:480px;background:#071124;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03)}
-
-    @media (max-width:980px){
-      .main{flex-direction:column}
-      .sidebar{width:100%}
+<meta charset="UTF-8" />
+<title>跑步游戏 | 달리기 게임</title>
+<style>
+    body {
+        margin: 0;
+        background: linear-gradient(#dff3ff, #9bd1ff);
+        font-family: Arial, sans-serif;
     }
 
-    /* small helper */
-    .small-muted{color:var(--muted);font-size:13px}
-  </style>
+    #loginScreen, #gameScreen {
+        display: none;
+        text-align: center;
+        padding-top: 40px;
+    }
+
+    #loginScreen {
+        display: block;
+    }
+
+    .title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #003366;
+    }
+
+    #playerName {
+        width: 260px;
+        padding: 10px;
+        font-size: 18px;
+    }
+
+    #startBtn {
+        margin-top: 20px;
+        padding: 10px 30px;
+        font-size: 18px;
+        background: #0077ff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    #track {
+        width: 900px;
+        height: 400px;
+        background: #444;
+        margin: 20px auto;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+
+    .line {
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background: white;
+        opacity: 0.6;
+    }
+
+    .runner {
+        width: 40px;
+        height: 40px;
+        background: yellow;
+        border-radius: 50%;
+        position: absolute;
+        left: 10px;
+    }
+
+    #player {
+        background: #00ff00;
+    }
+
+    #info {
+        text-align: center;
+        font-size: 18px;
+        color: #003366;
+        margin-top: 10px;
+    }
+
+    #rankBoard {
+        width: 320px;
+        margin: 20px auto;
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        text-align: left;
+    }
+
+    #rankBoard h3 {
+        text-align: center;
+        margin-top: 0;
+    }
+</style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div class="brand">
-        <div class="logo">跑</div>
-        <div>
-          <h1>跑道竞速 — 트랙 레이싱</h1>
-          <div class="subtitle">方向键控制 / 방향키 조작 · 第一名冲线即胜 / 1위로 골인하면 승리</div>
-        </div>
-      </div>
-      <div class="lang-note">
-        界面显示：中文 / 한국어（双语 simult.）· 数据存储至 Firebase 实时数据库
-      </div>
-    </header>
 
-    <div class="main">
-      <div class="left">
-        <div class="panel">
-          <div class="controls" id="loginControls">
-            <input id="nameInput" class="input" placeholder="姓名（中文） / 이름（한국어）" />
-            <button id="loginBtn" class="btn">登录并开始 / 로그인 및 시작</button>
-            <button id="restartBtn" class="btn ghost" style="display:none">重新开始 / 다시 시작</button>
-          </div>
-          <div style="margin-top:10px" class="small-muted">
-            操作说明：上/下键换道（Arrow Up / Arrow Down），右键加速（Arrow Right）。<br/>
-            조작: 위/아래로 레인 변경 (Arrow Up / Arrow Down), 오른쪽으로 가속 (Arrow Right).
-          </div>
-        </div>
-
-        <div class="panel game-area" style="padding:12px;">
-          <canvas id="gameCanvas" width="1000" height="420"></canvas>
-
-          <div class="sidebar panel">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <div class="small-muted">玩家 / 플레이어</div>
-                <div id="playerNameDisplay" style="font-weight:800;font-size:16px;color:#dff7ea">未登录 / 미로그인</div>
-              </div>
-              <div style="text-align:right">
-                <div class="small-muted">状态 / 상태</div>
-                <div id="gameStatus" style="font-weight:800;color:var(--muted)">准备 / 준비</div>
-              </div>
-            </div>
-
-            <div style="margin-top:12px">
-              <div class="hud">
-                <div class="stat">
-                  <div class="label">计时 / 타이머</div>
-                  <div class="value" id="timeDisplay">0.000 s</div>
-                </div>
-                <div class="stat">
-                  <div class="label">名次 / 순위</div>
-                  <div class="value" id="rankDisplay">- / -</div>
-                </div>
-              </div>
-            </div>
-
-            <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
-
-            <div>
-              <h3 style="margin:0 0 8px 0">实时排行榜（Top 10） / 실시간 랭킹 (Top 10)</h3>
-              <div class="list" id="leaderList">
-                <div class="small-muted">暂无记录 / 기록 없음</div>
-              </div>
-              <div style="margin-top:10px;color:var(--muted);font-size:13px">排名基于得分（分数越高越靠前） / 순위는 점수 기준 (높을수록 상위)</div>
-            </div>
-
-            <div style="margin-top:10px;display:flex;gap:8px">
-              <button id="shareBtn" class="btn ghost" style="flex:1">分享成绩 / 기록 공유</button>
-              <button id="clearLocalBtn" class="btn ghost" style="flex:1">重置分数示例 / 점수 초기화(예)</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="small-muted">说明 / 설명</div>
-              <div style="margin-top:8px;color:var(--muted);font-size:13px">
-                1) 你与 4 个电脑选手在同一起跑线出发。<br/>
-                2) 第一个通过终点线者获胜；若玩家第一则保存为胜利记录（写入 Firebase）。<br/>
-                3) 排行显示历史上传的最好成绩（分数越高越靠前）。<br/>
-                1) 플레이어와 4명의 CPU가 같은 출발선에서 출발합니다.<br/>
-                2) 먼저 결승선에 도달한 사람이 승리합니다. 플레이어가 1위이면 Firebase에 결과를 저장합니다.<br/>
-                3) 랭킹은 업로드된 최고 점수를 표시합니다.
-              </div>
-            </div>
-            <div style="text-align:right">
-              <div class="small-muted">开发提示 / 개발 안내</div>
-              <div style="margin-top:8px;color:var(--muted);font-size:13px">替换 firebaseConfig 后可直接连接你的数据库 / firebaseConfig를 교체하면 DB와 연결됩니다。</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- sidebar / right handled inside left to fit mobile -->
+<!-- ================= 登录画面 ================= -->
+<div id="loginScreen">
+    <div class="title">
+        🏃 跑步游戏（中文）<br>
+        🏃 달리기 게임 (한국어)
     </div>
 
-    <footer>Made with ❤️ — 单文件演示 · 단일 파일 데모</footer>
-  </div>
+    <p>请输入姓名 / 이름을 입력하세요</p>
+    <input id="playerName" placeholder="Your Name / 이름" />
 
-  <!-- Firebase libs (compat for single-file simplicity) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <br>
+    <button id="startBtn">开始游戏 / 게임 시작</button>
+</div>
 
-  <script>
-    // ======= Firebase 配置（请替换 YOUR_*）/ 아래를 실제 값으로 교체하세요 =======
+<!-- ================= 游戏画面 ================= -->
+<div id="gameScreen">
+    <h2>🏁 跑步比赛 / 달리기 경기</h2>
+    <div id="info">按 ↑ 加速（方向键）<br>↑키를 눌러 속도를 높이세요!</div>
+
+    <div id="track">
+        <div class="line" style="top:60px"></div>
+        <div class="line" style="top:120px"></div>
+        <div class="line" style="top:180px"></div>
+        <div class="line" style="top:240px"></div>
+        <div class="line" style="top:300px"></div>
+
+        <!-- 玩家 -->
+        <div id="player" class="runner" style="top: 20px;"></div>
+
+        <!-- AI 对手 -->
+        <div id="ai1" class="runner" style="top: 80px; background:#ff4444;"></div>
+        <div id="ai2" class="runner" style="top: 140px; background:#ff8800;"></div>
+        <div id="ai3" class="runner" style="top: 200px; background:#00bbff;"></div>
+        <div id="ai4" class="runner" style="top: 260px; background:#aa66cc;"></div>
+    </div>
+
+    <div id="rankBoard">
+        <h3>🏆 排行榜 / 순위표（Top 10）</h3>
+        <ol id="rankList"></ol>
+    </div>
+</div>
+
+<!-- ================= Firebase & Game Script ================= -->
+<script type="module">
+    // ========== Firebase ==========
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, onValue, query, limitToFirst, orderByChild } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "YOUR_DATABASE_URL",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        databaseURL: "YOUR_DATABASE_URL",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
     };
-    // ================= 初始化 Firebase =================
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const SCORES_DB_KEY = 'race_scores';
 
-    // ===== UI 元素 =====
-    const nameInput = document.getElementById('nameInput');
-    const loginBtn = document.getElementById('loginBtn');
-    const restartBtn = document.getElementById('restartBtn');
-    const playerNameDisplay = document.getElementById('playerNameDisplay');
-    const gameStatus = document.getElementById('gameStatus');
-    const timeDisplay = document.getElementById('timeDisplay');
-    const rankDisplay = document.getElementById('rankDisplay');
-    const leaderList = document.getElementById('leaderList');
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // ===== 游戏参数 =====
-    const LANES = 5;
-    const OPP_COUNT = 4;
-    const TRACK_PADDING = 40;
-    const START_X = TRACK_PADDING;
-    const FINISH_X = canvas.width - TRACK_PADDING;
-    let playerName = null;
-    let running = false;
-    let startTime = 0;
-    let elapsed = 0;
-    let playerObj, opponents;
-    let rafId = null;
-    let resultSavedThisRound = false;
+    // ========== 游戏逻辑 ==========
+    const loginScreen = document.getElementById("loginScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const playerNameInput = document.getElementById("playerName");
+    const startBtn = document.getElementById("startBtn");
+    const rankList = document.getElementById("rankList");
 
-    // 玩家与对手结构
-    function makePlayer(){
-      return {
-        x: START_X,
-        lane: Math.floor(LANES/2),
-        speed: 0,
-        maxSpeed: 8,
-        accel: 0.35,
-        decel: 0.18,
-        width: 36,
-        height: 28,
-        color: '#3ddc84',
-      };
-    }
-    function makeOpp(i){
-      const lane = i < LANES ? i : i % LANES;
-      return {
-        id: 'cpu_'+(i+1),
-        x: START_X - (60 + i*30),
-        lane: lane,
-        speed: 2 + Math.random()*2.6,
-        maxSpeed: 5 + Math.random()*2,
-        width: 34,
-        height: 26,
-        color: '#ff7b72',
-        finished: false,
-        finishTime: null,
-      };
-    }
+    let playerSpeed = 0;
+    let aiSpeeds = [2, 2.4, 2.1, 2.3];
+    let finished = false;
+    let playerName = "";
 
-    // ===== 输入处理 =====
-    const keys = {};
-    window.addEventListener('keydown', e=>{
-      keys[e.key] = true;
-      if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault();
-    });
-    window.addEventListener('keyup', e=>{ keys[e.key] = false; });
+    const runners = {
+        player: document.getElementById("player"),
+        ai: [
+            document.getElementById("ai1"),
+            document.getElementById("ai2"),
+            document.getElementById("ai3"),
+            document.getElementById("ai4")
+        ]
+    };
 
-    // ===== 游戏流程 =====
-    function resetRace(){
-      playerObj = makePlayer();
-      opponents = [];
-      for(let i=0;i<OPP_COUNT;i++) opponents.push(makeOpp(i));
-      running = false;
-      startTime = 0;
-      elapsed = 0;
-      resultSavedThisRound = false;
-      timeDisplay.textContent = '0.000 s';
-      rankDisplay.textContent = '- / -';
-      gameStatus.textContent = '准备 / 준비';
-      cancelAnimationFrame(rafId);
-      render(); // render initial
-    }
-
-    function startRace(){
-      if(!playerName){
-        alert('请输入姓名 / 이름을 입력하세요');
-        return;
-      }
-      resetRace(); // ensure fresh
-      running = true;
-      startTime = performance.now();
-      gameStatus.textContent = '进行中 / 진행 중';
-      rafId = requestAnimationFrame(loop);
-    }
-
-    function loop(ts){
-      if(!running) return;
-      elapsed = (performance.now() - startTime)/1000; // seconds
-      update(elapsed);
-      render();
-      rafId = requestAnimationFrame(loop);
-    }
-
-    function endRace(){
-      running = false;
-      gameStatus.textContent = '已结束 / 종료';
-      cancelAnimationFrame(rafId);
-      // 计算名次并保存
-      const standings = computeStandings();
-      const playerRank = standings.findIndex(s=>s.type==='player') + 1;
-      rankDisplay.textContent = playerRank + ' / ' + (OPP_COUNT+1);
-      // 仅当玩家排名第一或无论如何都保存成绩（这里保存所有完成记录）
-      if(!resultSavedThisRound){
-        const playerTime = playerObj.finishTime || elapsed;
-        const score = computeScore(playerRank, playerTime);
-        saveResultToFirebase(playerName, score, playerTime, playerRank);
-        resultSavedThisRound = true;
-      }
-    }
-
-    // ===== 更新逻辑 =====
-    function update(dt){
-      // 玩家控制：上/下换道（瞬移），右键加速，左键减速
-      if((keys['ArrowUp'] || keys['w']) && playerObj.lane > 0){
-        playerObj.lane -= 1;
-        keys['ArrowUp'] = keys['w'] = false;
-      }
-      if((keys['ArrowDown'] || keys['s']) && playerObj.lane < LANES-1){
-        playerObj.lane += 1;
-        keys['ArrowDown'] = keys['s'] = false;
-      }
-      if(keys['ArrowRight'] || keys['d']){
-        playerObj.speed = Math.min(playerObj.maxSpeed, playerObj.speed + playerObj.accel);
-      } else if(keys['ArrowLeft'] || keys['a']){
-        playerObj.speed = Math.max(0, playerObj.speed - playerObj.decel*2);
-      } else {
-        // natural friction
-        playerObj.speed = Math.max(0, playerObj.speed - 0.04);
-      }
-      playerObj.x += playerObj.speed;
-      if(playerObj.x > FINISH_X) {
-        if(!playerObj.finishTime){
-          playerObj.finishTime = elapsed;
+    startBtn.onclick = () => {
+        if (!playerNameInput.value.trim()) {
+            alert("请输入姓名 / 이름을 입력하세요");
+            return;
         }
-      }
 
-      // opponents AI：尽量逼近终点，速度有小幅波动和随机加速/减速
-      opponents.forEach(op=>{
-        if(op.finished) return;
-        // small accel towards max
-        const fluct = (Math.sin(performance.now()/300 + op.id.length) + 1) * 0.5;
-        const target = op.maxSpeed * (0.6 + 0.4*fluct);
-        if(op.speed < target) op.speed += 0.02 + Math.random()*0.04;
-        else op.speed = Math.max(0.8, op.speed - 0.01);
-        // occasional sprint
-        if(Math.random() < 0.004) op.speed = Math.min(op.maxSpeed + 1.2, op.speed + 1.0);
-        op.x += op.speed;
-        // lane jitter occasionally
-        if(Math.random() < 0.0025){
-          const delta = Math.random() < 0.5 ? -1 : 1;
-          op.lane = Math.max(0, Math.min(LANES-1, op.lane + delta));
-        }
-        if(op.x > FINISH_X && !op.finished){
-          op.finished = true;
-          op.finishTime = elapsed;
-        }
-      });
+        playerName = playerNameInput.value.trim();
+        loginScreen.style.display = "none";
+        gameScreen.style.display = "block";
+        startGame();
+    };
 
-      // 若所有人均完成或玩家完成后且其他也完成名次可判定 -> 结束
-      const allFinished = opponents.every(o=>o.finished) && playerObj.finishTime;
-      if(playerObj.finishTime && !allFinished){
-        // still wait until others finish? 为了更快反馈，若玩家已完成且至少已有3个对手比玩家慢则判定结束
-        const fasterOpponents = opponents.filter(o=>o.finishTime && o.finishTime < playerObj.finishTime).length;
-        // 如果已有 0 个比玩家更快（玩家领先），可提前结束并宣告胜利
-        if(fasterOpponents === 0){
-          endRace();
-        } else {
-          // 若所有对手完成或超过一定时间，也结束
-          if(allFinished) endRace();
-        }
-      } else if(playerObj.finishTime && allFinished){
-        endRace();
-      }
-
-      // safety: if player falls too far back (x < START - 200) 自动结束判负
-      if(playerObj.x < START_X - 200){
-        playerObj.finishTime = elapsed;
-        endRace();
-      }
-
-      // 更新实时名次显示（当前基于位置 x）
-      const standings = computeStandings();
-      const playerRank = standings.findIndex(s=>s.type==='player') + 1;
-      rankDisplay.textContent = playerRank + ' / ' + (OPP_COUNT+1);
-      timeDisplay.textContent = elapsed.toFixed(3) + ' s';
-    }
-
-    function computeStandings(){
-      // 收集所有选手当前位置或 finishTime（用到达点判断）
-      const list = [];
-      list.push({type:'player', name:playerName || '你 / 당신', x:playerObj.x, finishTime:playerObj.finishTime || null});
-      opponents.forEach(op=> list.push({type:'cpu', name:op.id, x:op.x, finishTime:op.finishTime || null}));
-      // 排序规则：若有 finishTime 则按 finishTime 升序（小者优），否则按 x 值降序（距离越远位次越高）
-      list.sort((a,b)=>{
-        if(a.finishTime && b.finishTime){
-          return a.finishTime - b.finishTime;
-        } else if(a.finishTime && !b.finishTime){
-          return -1;
-        } else if(!a.finishTime && b.finishTime){
-          return 1;
-        } else {
-          return b.x - a.x;
-        }
-      });
-      return list;
-    }
-
-    // ===== 渲染 =====
-    function render(){
-      // 背景
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#041324';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
-      // 赛道绘制
-      const laneH = canvas.height / LANES;
-      for(let i=0;i<LANES;i++){
-        const y = i*laneH;
-        ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.01)' : 'rgba(255,255,255,0.008)';
-        ctx.fillRect(0,y,canvas.width,laneH);
-        // lane divider
-        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-        ctx.beginPath();
-        ctx.moveTo(0, y + laneH);
-        ctx.lineTo(canvas.width, y + laneH);
-        ctx.stroke();
-      }
-
-      // 起点与终点
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 12px Inter, sans-serif';
-      ctx.fillText('START / 출발', START_X - 30, 18);
-      // finish stripe pattern
-      for(let i=0;i<8;i++){
-        ctx.fillStyle = i%2===0 ? '#fff' : '#000';
-        ctx.fillRect(FINISH_X + (i%2===0?0:8), 6, 8, canvas.height-12);
-      }
-      ctx.fillStyle = '#fff';
-      ctx.fillText('FINISH / 결승', FINISH_X + 10, 18);
-
-      // opponents
-      opponents.forEach(op=>{
-        const y = op.lane * laneH + laneH/2;
-        drawRunner(op.x, y, op.width, op.height, op.color, op.id, op.finished);
-        // name tag
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.font = '11px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(op.finished ? (op.finishTime ? op.finishTime.toFixed(2)+'s' : '—') : op.id, op.x + op.width/2, y - op.height - 8);
-      });
-
-      // player
-      const py = playerObj.lane * laneH + laneH/2;
-      drawRunner(playerObj.x, py, playerObj.width, playerObj.height, playerObj.color, '你 / 당신', playerObj.finishTime);
-
-      // HUD overlay
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.fillRect(10,10,240,40);
-      ctx.fillStyle = '#bfffd6';
-      ctx.font = 'bold 14px Inter, sans-serif';
-      ctx.fillText(playerName || '未登录 / 미로그인', 18, 32);
-      ctx.fillStyle = '#dff7ea';
-      ctx.font = '12px Inter, sans-serif';
-      ctx.fillText('时间 / 시간: ' + elapsed.toFixed(3) + ' s', 120, 32);
-    }
-
-    function drawRunner(x, y, w, h, color, label, finished){
-      ctx.save();
-      ctx.translate(x, y);
-      // shadow
-      ctx.beginPath();
-      ctx.ellipse(w/2, h/1.6, w*0.9, h*0.6, 0, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      ctx.fill();
-
-      // body
-      ctx.beginPath();
-      roundRect(ctx, -w/2, -h/2, w, h, 6);
-      ctx.fillStyle = finished ? 'rgba(200,200,200,0.22)' : color;
-      ctx.fill();
-
-      // eye / face mark
-      ctx.fillStyle = '#07221a';
-      ctx.fillRect(-w/8, -h/8, w/6, h/6);
-
-      // label
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.font = '11px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(label, 0, -h/1.5);
-      ctx.restore();
-    }
-
-    function roundRect(ctx,x,y,w,h,r){
-      if (w < 2 * r) r = w / 2;
-      if (h < 2 * r) r = h / 2;
-      ctx.beginPath();
-      ctx.moveTo(x+r, y);
-      ctx.arcTo(x+w, y, x+w, y+h, r);
-      ctx.arcTo(x+w, y+h, x, y+h, r);
-      ctx.arcTo(x, y+h, x, y, r);
-      ctx.arcTo(x, y, x+w, y, r);
-      ctx.closePath();
-    }
-
-    // ===== Firebase: 写入与实时排行榜 =====
-    function computeScore(rank, timeSeconds){
-      // 依据排名与用时计算分数：名次加权 + 时间反比，分数越高越好
-      // 例如：基础 = (总参赛数 - rank + 1) * 2000  - timeSeconds*80
-      const base = (OPP_COUNT + 1 - rank + 1) * 2000;
-      const timePenalty = Math.round(timeSeconds * 80);
-      const s = Math.max(0, base - timePenalty + Math.floor(Math.random()*50)); // 少量随机抖动
-      return s;
-    }
-
-    function saveResultToFirebase(name, score, timeSec, rank){
-      try {
-        const ref = db.ref(SCORES_DB_KEY);
-        const payload = {
-          name: name,
-          score: Number(score),
-          time: Number(timeSec),
-          rank: Number(rank),
-          ts: Date.now()
-        };
-        ref.push(payload).then(()=>{
-          console.log('结果已保存', payload);
-        }).catch(err=>{
-          console.error('保存失败', err);
+    function startGame() {
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp") {
+                playerSpeed += 0.5; // 加速
+            }
         });
-      } catch(err){
-        console.error('Firebase 写入异常', err);
-      }
+
+        requestAnimationFrame(gameLoop);
     }
 
-    // 订阅排行榜（按 score 排序，limitToLast(10) -> 取最高10，随后逆序展示）
-    function subscribeLeaderboard(){
-      const ref = db.ref(SCORES_DB_KEY).orderByChild('score').limitToLast(10);
-      ref.on('value', snapshot=>{
-        const data = snapshot.val() || {};
-        const arr = Object.keys(data).map(k=>({ key:k, ...data[k]}));
-        arr.sort((a,b)=>b.score - a.score);
-        renderLeaderboard(arr);
-      });
-    }
-    function renderLeaderboard(arr){
-      leaderList.innerHTML = '';
-      if(arr.length === 0){
-        leaderList.innerHTML = '<div class="small-muted">暂无记录 / 기록 없음</div>';
-        return;
-      }
-      arr.forEach((it, idx)=>{
-        const item = document.createElement('div');
-        item.className = 'item';
-        const rank = document.createElement('div');
-        rank.className = 'rank';
-        rank.textContent = idx+1;
-        const name = document.createElement('div');
-        name.className = 'name';
-        name.textContent = it.name || '匿名 / 익명';
-        const sc = document.createElement('div');
-        sc.className = 'score';
-        sc.textContent = it.score;
-        item.appendChild(rank);
-        item.appendChild(name);
-        item.appendChild(sc);
-        leaderList.appendChild(item);
-      });
+    function gameLoop() {
+        if (finished) return;
+
+        // 玩家前进
+        const p = runners.player;
+        let x = parseFloat(p.style.left);
+        x += playerSpeed * 0.7;
+        p.style.left = x + "px";
+
+        // AI 前进
+        runners.ai.forEach((ai, i) => {
+            let ax = parseFloat(ai.style.left);
+            ax += aiSpeeds[i];
+            ai.style.left = ax + "px";
+        });
+
+        // 判断胜负
+        if (x >= 840) {
+            finished = true;
+            saveScore(1000 - Math.floor(performance.now() / 1000));
+            alert("🎉 你赢了！/ 당신이 승리했습니다!");
+        }
+
+        requestAnimationFrame(gameLoop);
     }
 
-    // 清空示例（谨慎）
-    function clearAllScoresDemo(){
-      if(!confirm('确认清空所有排行榜数据？ / 모든 랭킹 데이터를 삭제하시겠습니까?')) return;
-      db.ref(SCORES_DB_KEY).remove().then(()=>{
-        alert('已清空 / 삭제 완료');
-      }).catch(err=>{
-        alert('清空失败: ' + err.message);
-      });
+    // ========== 上传分数 ==========
+    function saveScore(score) {
+        set(ref(db, "scores/" + Date.now()), {
+            name: playerName,
+            score: score
+        });
     }
 
-    // ===== UI 事件绑定 =====
-    loginBtn.addEventListener('click', ()=>{
-      const name = nameInput.value.trim();
-      if(!name){ alert('请输入姓名 / 이름을 입력하세요'); return; }
-      playerName = name;
-      playerNameDisplay.textContent = name;
-      loginBtn.textContent = '以该名开始 / 이 이름으로 시작';
-      restartBtn.style.display = 'inline-block';
-      startRace();
-    });
-    restartBtn.addEventListener('click', ()=>{
-      if(confirm('确认重新开始当前回合？ / 현재 라운드를 다시 시작하겠습니까?')){
-        startRace();
-      }
-    });
-    document.getElementById('shareBtn').addEventListener('click', ()=>{
-      alert('分享功能示例 — 可在此处拓展 / 공유 기능은 확장 가능');
-    });
-    document.getElementById('clearLocalBtn').addEventListener('click', clearAllScoresDemo);
+    // ========== 实时排行榜 ==========
+    const rankQuery = query(
+        ref(db, "scores"),
+        orderByChild("score"),
+        limitToFirst(10)
+    );
 
-    // 初始化
-    resetRace();
-    subscribeLeaderboard();
+    onValue(rankQuery, (snapshot) => {
+        const data = snapshot.val();
+        rankList.innerHTML = "";
 
-    // 友好控制提示
-    console.log('跑道竞速 已加载 — 上/下换道，右键加速。中文 / 한국어 双语界面。');
-
-    // 页面卸载前保存一次（如果尚未保存且玩家完成）
-    window.addEventListener('beforeunload', ()=>{
-      if(playerObj && playerObj.finishTime && !resultSavedThisRound){
-        const standings = computeStandings();
-        const playerRank = standings.findIndex(s=>s.type==='player') + 1;
-        const score = computeScore(playerRank, playerObj.finishTime);
-        saveResultToFirebase(playerName || '游客', score, playerObj.finishTime, playerRank);
-      }
+        if (data) {
+            const arr = Object.values(data).sort((a, b) => a.score - b.score);
+            arr.forEach((item) => {
+                const li = document.createElement("li");
+                li.textContent = `${item.name} — ${item.score}`;
+                rankList.appendChild(li);
+            });
+        }
     });
 
-  </script>
+</script>
+
 </body>
 </html>
