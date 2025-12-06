@@ -3,34 +3,35 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>跑道竞速 — 精装可爱版（中/韩）</title>
+<title>跑道竞速 — 三风格成品版（中/韩）</title>
 <style>
   :root{
-    --bg1:#f0f6fb; --panel:#ffffffee; --accent:#ff8da1; --accent2:#ffd36b; --muted:#6b7c88;
+    --bg1:#f0f6fb; --panel:#ffffffee; --accent:#ff8da1; --accent2:#ffd36b; --muted:#546a75;
   }
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:linear-gradient(180deg,#e6f7ff,#d6f0ff);color:#073047}
-  .app{max-width:1100px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .app{max-width:1200px;margin:12px auto;padding:12px;display:flex;flex-direction:column;gap:10px}
   header{display:flex;justify-content:space-between;align-items:center}
-  .logo{display:flex;gap:12px;align-items:center}
-  .logo .icon{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#2b2b2b}
-  h1{margin:0;font-size:20px}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#2b2b2b}
+  h1{margin:0;font-size:18px}
   .subtitle{font-size:13px;color:var(--muted)}
 
-  .controls{display:flex;gap:8px;align-items:center;margin-top:10px}
+  .controls.panel{display:flex;gap:8px;align-items:center;padding:12px;border-radius:12px;background:var(--panel);box-shadow:0 8px 24px rgba(0,0,0,0.06)}
   input[type="text"]{padding:10px;border-radius:10px;border:1px solid rgba(7,48,71,0.06);min-width:220px}
-  button{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#2b2b2b;font-weight:800;cursor:pointer}
+  button{padding:9px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#2b2b2b;font-weight:800;cursor:pointer}
   button.ghost{background:transparent;border:1px solid rgba(7,48,71,0.06);color:var(--muted)}
+  select{padding:8px;border-radius:8px}
 
-  .layout{display:flex;gap:14px;margin-top:14px}
+  .layout{display:flex;gap:12px;margin-top:6px}
   .left{flex:1}
   .panel{background:var(--panel);padding:12px;border-radius:12px;box-shadow:0 8px 30px rgba(11,46,66,0.06)}
-  #stage{padding:12px;border-radius:12px;min-height:540px}
+  #stage{padding:12px;border-radius:12px;min-height:560px}
 
   canvas{display:block;border-radius:10px;background:linear-gradient(180deg,#bdefff,#fef7e6);width:100%;height:520px}
 
-  .sidebar{width:320px;min-width:260px;display:flex;flex-direction:column;gap:12px}
-  .leader .list{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow:auto}
+  .sidebar{width:360px;min-width:260px;display:flex;flex-direction:column;gap:10px}
+  .leader .list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto}
   .item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:linear-gradient(90deg,#fff,#fff);border:1px solid rgba(7,48,71,0.04)}
   .rank{width:42px;text-align:center;font-weight:900;color:#ff7b9a}
   .pname{flex:1;font-weight:800}
@@ -40,6 +41,8 @@
   .stat{background:linear-gradient(90deg,#fff,#fff);padding:10px;border-radius:10px;min-width:120px;text-align:center;border:1px solid rgba(7,48,71,0.04)}
   .label{font-size:12px;color:var(--muted)}
   .val{font-weight:900;margin-top:6px;font-size:16px}
+
+  .tip{font-size:13px;color:var(--muted)}
 
   footer{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
 
@@ -51,47 +54,59 @@
   @media (max-width:980px){
     .layout{flex-direction:column}
     canvas{height:420px}
+    .sidebar{width:100%}
   }
-  .small{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
   <div class="app" role="application">
     <header>
-      <div class="logo">
-        <div class="icon">跑</div>
+      <div class="brand">
+        <div class="logo">跑</div>
         <div>
-          <h1>跑道竞速（可爱版） / 귀여운 트랙 레이싱</h1>
-          <div class="subtitle">卡通音效 · 成绩上传 Firebase（可选） · 单文件 · GitHub Pages 可用</div>
+          <h1>跑道竞速 — 三风格版（中/韩）</h1>
+          <div class="subtitle">像素 / 矢量 / 卡通 三风格可选 · 卡通音效 · Firebase 排行（可选）</div>
         </div>
       </div>
 
-      <div style="display:flex;gap:12px;align-items:center">
-        <label class="small">上传到 Firebase（需配置）<input id="uploadToggle" type="checkbox" style="margin-left:6px"></label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label class="tip">上传 Firebase<input id="uploadToggle" type="checkbox" style="margin-left:6px"></label>
       </div>
     </header>
 
+    <!-- 控件 -->
     <div class="controls panel">
       <input id="playerName" type="text" placeholder="姓名 / 이름 (中文+韩文)" />
       <button id="startBtn">开始 · 시작</button>
       <button id="practiceBtn" class="ghost">练习 · 연습</button>
-      <button id="resetLocal" class="ghost">清空本地排行 / 로컬 초기화</button>
+      <button id="restartBtn" class="ghost">重置 · 재시작</button>
+
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <label class="small">音量 / 볼륨 <input id="vol" type="range" min="0" max="1" step="0.05" value="0.65" style="margin-left:8px"></label>
+        <label class="tip">风格 / 스타일：
+          <select id="styleSelect">
+            <option value="pixel">1. 像素帧（Pixel）</option>
+            <option value="vector">2. 矢量圆人（Vector）</option>
+            <option value="cartoon">3. 卡通简笔（Cartoon）</option>
+          </select>
+        </label>
+
+        <label class="tip">音效<input id="sfxToggle" type="checkbox" checked style="margin-left:6px"></label>
+        <label class="tip">Combo<input id="comboToggle" type="checkbox" checked style="margin-left:6px"></label>
+        <label class="tip">音量<input id="vol" type="range" min="0" max="1" step="0.05" value="0.7" style="width:110px;margin-left:6px"></label>
       </div>
     </div>
 
     <div class="layout">
       <div class="left">
         <div id="stage" class="panel">
-          <canvas id="gameCanvas" width="1000" height="520" aria-label="跑道竞速游戏画布"></canvas>
+          <canvas id="canvas" width="1024" height="520" aria-label="游戏画布"></canvas>
         </div>
 
         <div class="panel hud">
-          <div style="display:flex;gap:10px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center">
             <div class="stat"><div class="label">计时 / 타이머</div><div id="timeVal" class="val">0.000 s</div></div>
             <div class="stat"><div class="label">名次 / 순위</div><div id="rankVal" class="val">- / -</div></div>
-            <div class="stat"><div class="label">速度 / 속도</div><div id="speedVal" class="val">0.0</div></div>
+            <div class="stat"><div class="label">速度 / 속도</div><div id="speedVal" class="val">0.00</div></div>
             <div class="stat"><div class="label">体力 / 스태미너</div><div id="staminaVal" class="val">100%</div></div>
           </div>
         </div>
@@ -100,12 +115,15 @@
       <aside class="sidebar">
         <div class="panel leader">
           <h3>排行榜 Top10 / 실시간 랭킹</h3>
-          <div class="list" id="leaderList"><div class="small">暂无记录 / 기록 없음</div></div>
+          <div class="list" id="leaderList"><div class="tip">暂无记录 / 기록 없음</div></div>
         </div>
 
         <div class="panel">
-          <div style="font-weight:800">控制 / 조작</div>
-          <div class="small" style="margin-top:8px">↑ / W 加速 · A / ← 上道 · D / → 下道 · Space 冲刺（短时，冷却）</div>
+          <div style="font-weight:800">说明 · 설명</div>
+          <div class="tip" style="margin-top:8px">
+            中：↑ / W 加速 · A / ← 上道 · D / → 下道 · Space 冲刺（冷却）。<br>
+            韩：↑ / W 가속 · A/← 레인 위로 · D/→ 레인 아래로 · Space 스프린트.
+          </div>
         </div>
       </aside>
     </div>
@@ -123,555 +141,496 @@
     </div>
   </div>
 
-  <!-- Firebase compat libs (single-file friendly) -->
+  <!-- Firebase compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <script>
-  /*****************************************************************
-   * 终极可爱版跑道竞速（单文件）
-   * - 卡通音效（WebAudio）
-   * - 得分计算并可上传 Firebase（可配置）
-   * - 本地 Top10（localStorage）
-   * - 中文/韩文界面（文本均显示）
-   *****************************************************************/
+<script>
+/* ===========================================================
+  三风格成品跑道竞速（单文件）
+  - 三种跑者风格：pixel / vector / cartoon
+  - 卡通风格音效（可开关）
+  - 得分：距离分 + 排名分 + 可选 Combo
+  - Firebase 可选上传（保留 firebaseConfig 格式）
+  =========================================================== */
 
-  // ========== Firebase 配置（请替换为你的项目配置） ==========
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-  // =================================================================
+/* ========== Firebase 配置（保留格式） ========== */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+/* =================================================== */
 
-  // init firebase (will be used only if user enables upload)
-  let firebaseInitialized = false;
-  function initFirebase(){
-    try{
-      if(firebaseInitialized) return;
-      firebase.initializeApp(firebaseConfig);
-      firebaseInitialized = true;
-      console.log('Firebase initialized');
-    }catch(e){
-      console.warn('Firebase init failed', e);
-    }
+let firebaseInitialized = false;
+function initFirebase(){
+  try{
+    if(firebaseInitialized) return;
+    firebase.initializeApp(firebaseConfig);
+    firebaseInitialized = true;
+    console.log('Firebase ready');
+  }catch(e){ console.warn('Firebase init failed', e); }
+}
+
+/* ========== DOM & constants ========== */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const playerNameInput = document.getElementById('playerName');
+const startBtn = document.getElementById('startBtn');
+const practiceBtn = document.getElementById('practiceBtn');
+const restartBtn = document.getElementById('restartBtn');
+const styleSelect = document.getElementById('styleSelect');
+const sfxToggle = document.getElementById('sfxToggle');
+const comboToggle = document.getElementById('comboToggle');
+const volRange = document.getElementById('vol');
+const uploadToggle = document.getElementById('uploadToggle');
+
+const leaderList = document.getElementById('leaderList');
+const timeVal = document.getElementById('timeVal');
+const rankVal = document.getElementById('rankVal');
+const speedVal = document.getElementById('speedVal');
+const staminaVal = document.getElementById('staminaVal');
+
+const overlay = document.getElementById('overlay');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+const modalClose = document.getElementById('modalClose');
+
+const LANES = 5;
+const RUNNERS = 5; // 1 player + 4 AI
+const START_X = 120;
+const FINISH_X = W - 160;
+const LANE_H = H / LANES;
+const STORAGE_KEY = 'race_three_style_leader_v1';
+
+/* ========== state ========== */
+let runners = [];
+let player = null;
+let running = false;
+let raceStartTs = 0;
+let raf = null;
+let lastTs = 0;
+let keys = {};
+let audioCtx = null;
+let volume = parseFloat(volRange.value);
+let footstepsTimer = null;
+
+/* ========== Audio (cartoon style via WebAudio) ========== */
+function ensureAudio(){
+  if(!audioCtx){
+    const C = window.AudioContext || window.webkitAudioContext;
+    if(C) audioCtx = new C();
   }
+}
+function playBeep(freq, len=0.12, gain=0.06){
+  if(!sfxToggle.checked) return;
+  ensureAudio(); if(!audioCtx) return;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type='sine'; o.frequency.value = freq;
+  o.connect(g); g.connect(audioCtx.destination);
+  g.gain.value = 0.0001;
+  g.gain.linearRampToValueAtTime(volume*gain, audioCtx.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + len + 0.01);
+  o.start(); o.stop(audioCtx.currentTime + len + 0.02);
+}
+function playClick(){ playBeep(1200,0.12,0.08); }
+function playCheer(){ playBeep(1000,0.08); setTimeout(()=>playBeep(1300,0.07),80); setTimeout(()=>playBeep(1600,0.09),160); }
+function startFootsteps(){
+  stopFootsteps(); ensureAudio(); if(!audioCtx) return;
+  let i=0;
+  footstepsTimer = setInterval(()=>{ if(running && sfxToggle.checked) playBeep(650 + (i%2?40:0), 0.06, 0.05); i++; }, 160);
+}
+function stopFootsteps(){ if(footstepsTimer){ clearInterval(footstepsTimer); footstepsTimer=null; } }
 
-  // ========== DOM ==========
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-
-  const playerNameInput = document.getElementById('playerName');
-  const startBtn = document.getElementById('startBtn');
-  const practiceBtn = document.getElementById('practiceBtn');
-  const resetLocalBtn = document.getElementById('resetLocal');
-  const leaderListEl = document.getElementById('leaderList');
-  const timeVal = document.getElementById('timeVal');
-  const rankVal = document.getElementById('rankVal');
-  const speedVal = document.getElementById('speedVal');
-  const staminaVal = document.getElementById('staminaVal');
-  const overlay = document.getElementById('overlay');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalBody = document.getElementById('modalBody');
-  const modalClose = document.getElementById('modalClose');
-  const uploadToggle = document.getElementById('uploadToggle');
-  const volRange = document.getElementById('vol');
-
-  // game constants
-  const LANES = 5;
-  const RUNNERS = 5; // player + 4 AI
-  const START_X = 120;
-  const FINISH_X = W - 160;
-  const LANE_H = H / LANES;
-  const STORAGE_KEY = 'race_procute_leader_v1';
-
-  // state
-  let runners = [];
-  let player = null;
-  let running = false;
-  let raceStartTs = 0;
-  let raf = null;
-  let lastTs = 0;
-  let keys = {};
-  let audioCtx = null;
-  let volume = parseFloat(volRange.value);
-
-  // ----- audio (cartoon style) using WebAudio -----
-  function ensureAudio(){
-    if(!audioCtx){
-      const ctx = window.AudioContext || window.webkitAudioContext;
-      if(ctx) audioCtx = new ctx();
-    }
+/* ========== Runner (supports 3 styles) ========== */
+class Runner {
+  constructor(name, color, isPlayer=false){
+    this.name = name; this.color = color; this.isPlayer = isPlayer;
+    this.reset();
   }
-  function playClick(){ // short "ding"
-    ensureAudio(); if(!audioCtx) return;
-    const g = audioCtx.createGain(); g.gain.value = 0.0001; g.connect(audioCtx.destination);
-    const o = audioCtx.createOscillator(); o.type='square'; o.frequency.value = 1200;
-    o.connect(g); g.gain.linearRampToValueAtTime(volume*0.08, audioCtx.currentTime + 0.003);
-    g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.18);
-    o.start(); o.stop(audioCtx.currentTime + 0.18);
+  reset(){
+    this.x = START_X - (this.isPlayer?0: (20 + Math.random()*60));
+    this.lane = Math.floor(LANES/2) + (this.isPlayer?0: (Math.random()<0.5?-1:1));
+    this.width = 44; this.height = 34;
+    this.speed = this.isPlayer ? 0 : (2 + Math.random()*2.2);
+    this.maxSpeed = this.isPlayer ? 8.5 : (3.4 + Math.random()*1.6);
+    this.stamina = 100; this.finished=false; this.finishTime=null;
+    this.sprintCooldown = 0; this.isSprinting=false;
+    this.combo = 0;
   }
-  function playBeep(freq, len=0.18){
-    ensureAudio(); if(!audioCtx) return;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine'; o.frequency.value = freq;
-    o.connect(g); g.connect(audioCtx.destination);
-    g.gain.value = 0.0001;
-    g.gain.linearRampToValueAtTime(volume*0.06, audioCtx.currentTime + 0.01);
-    g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + len);
-    o.start(); o.stop(audioCtx.currentTime + len + 0.01);
+  update(dt){
+    if(this.finished){ this.x += 0.12 * dt; return; }
+    this.x += this.speed * dt;
+    if(this.x >= FINISH_X){ this.x = FINISH_X; this.finished=true; this.finishTime=(performance.now()-raceStartTs)/1000; }
+    if(this.sprintCooldown > 0) this.sprintCooldown = Math.max(0, this.sprintCooldown - dt/60);
+    if(this.sprintCooldown === 0) this.isSprinting=false;
   }
+  draw(ctx, style){
+    const y = this.lane * LANE_H + LANE_H/2;
+    // shadow
+    ctx.beginPath();
+    ctx.ellipse(this.x + this.width/2, y + this.height*0.9, this.width, this.height*0.9, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(7,48,71,0.12)'; ctx.fill();
 
-  // looping footsteps (cartoon "tap-tap") - implemented as short repeated beeps with scheduler
-  let footstepsTimer = null;
-  function startFootsteps(){
-    ensureAudio(); if(!audioCtx) return;
-    stopFootsteps();
-    let i=0;
-    footstepsTimer = setInterval(()=>{
-      const f = 650 + (i%2===0?0:60);
-      playBeep(f, 0.08);
-      i++;
-    }, 160);
-  }
-  function stopFootsteps(){ if(footstepsTimer){ clearInterval(footstepsTimer); footstepsTimer = null; } }
-
-  function playCheer(){
-    ensureAudio(); if(!audioCtx) return;
-    // quick stack of beeps
-    playBeep(1000,0.09); setTimeout(()=>playBeep(1300,0.08),80); setTimeout(()=>playBeep(1600,0.12),160);
-  }
-
-  // ========== Runner class ==========
-  class Runner {
-    constructor(name, color, isPlayer=false){
-      this.name = name;
-      this.color = color;
-      this.isPlayer = isPlayer;
-      this.reset();
-    }
-    reset(){
-      this.x = START_X - (this.isPlayer ? 0 : (20 + Math.random()*60));
-      this.lane = Math.floor(LANES/2) + (this.isPlayer ? 0 : (Math.random() < 0.5 ? -1 : 1));
-      if(this.lane < 0) this.lane = 0;
-      if(this.lane >= LANES) this.lane = LANES - 1;
-      this.width = 44; this.height = 34;
-      this.speed = this.isPlayer ? 0 : (2 + Math.random()*2.2);
-      this.maxSpeed = this.isPlayer ? 8.5 : (3.4 + Math.random()*1.6);
-      this.stamina = 100;
-      this.finished = false;
-      this.finishTime = null;
-      this.sprintCooldown = 0;
-      this.isSprinting = false;
-    }
-    update(dt){
-      if(this.finished){ this.x += 0.12 * dt; return; }
-      // basic movement
-      this.x += this.speed * dt;
-      if(this.x >= FINISH_X){ this.x = FINISH_X; this.finished = true; this.finishTime = (performance.now() - raceStartTs)/1000; }
-      if(this.sprintCooldown > 0) this.sprintCooldown = Math.max(0, this.sprintCooldown - dt/60);
-      if(this.sprintCooldown === 0) this.isSprinting = false;
-    }
-    draw(ctx){
-      const y = this.lane * LANE_H + LANE_H/2;
-      // shadow
-      ctx.beginPath();
-      ctx.ellipse(this.x + this.width/2, y + this.height*0.9, this.width, this.height*0.9, 0, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(7,48,71,0.12)'; ctx.fill();
-      // body
-      roundRect(ctx, this.x, y - this.height/2, this.width, this.height, 12);
+    if(style === 'vector'){
+      // simple circle runner
+      ctx.beginPath(); ctx.arc(this.x + this.width/2, y, this.width/2, 0, Math.PI*2); ctx.fillStyle = this.color; ctx.fill();
+      // eyes
+      ctx.fillStyle='#fff'; ctx.fillRect(this.x + this.width/2 -8, y-6,4,4); ctx.fillRect(this.x + this.width/2 +4, y-6,4,4);
+    } else if(style === 'cartoon'){
+      // cute rounded rectangle + face
+      roundRect(ctx, this.x, y - this.height/2, this.width, this.height, 10);
       ctx.fillStyle = this.color; ctx.fill();
-      // face (cute eyes)
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(this.x + 10, y - 6, 6, 6);
-      ctx.fillRect(this.x + 26, y - 6, 6, 6);
-      // name label
-      ctx.fillStyle = '#073047'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText(this.name, this.x + this.width/2, y - this.height/1.5);
-    }
-  }
-
-  function roundRect(ctx,x,y,w,h,r){
-    if(w<2*r) r=w/2; if(h<2*r) r=h/2;
-    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
-  }
-
-  // ========== init & UI ==========
-  function initRunners(){
-    const colors = ['#ff8da1','#ffd36b','#8de6ff','#bfe87d','#cdb2ff'];
-    runners = [];
-    for(let i=0;i<RUNNERS;i++){
-      const isPlayer = (i===0);
-      const name = isPlayer ? (playerNameInput.value.trim() || (languageText().guest)) : 'CPU-'+i;
-      runners.push(new Runner(name, colors[i%colors.length], isPlayer));
-    }
-    player = runners[0];
-    updateLeaderboardUI();
-    drawScene();
-  }
-
-  initRunners();
-
-  // language text (we display both languages, but provide defaults)
-  function languageText(){ return { guest: '游客 / 게스트' }; }
-
-  // ========== controls ==========
-  window.addEventListener('keydown', (e)=>{ keys[e.key] = true; if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault(); });
-  window.addEventListener('keyup', (e)=>{ keys[e.key] = false; });
-
-  // touch: tap top/bottom to change lane; double-tap to sprint
-  let lastTap = 0;
-  canvas.addEventListener('touchstart', (ev)=>{
-    ev.preventDefault();
-    const t = ev.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const y = t.clientY - rect.top;
-    if(y < H/2) changeLane(-1); else changeLane(1);
-    const now = performance.now();
-    if(now - lastTap < 300) attemptSprint();
-    lastTap = now;
-  }, {passive:false});
-
-  function changeLane(delta){ player.lane = Math.max(0, Math.min(LANES-1, player.lane + delta)); }
-
-  // UI buttons
-  startBtn.addEventListener('click', ()=>{
-    if(!playerNameInput.value.trim()) playerNameInput.value = languageText().guest;
-    initRunners();
-    playClick();
-    startCountdownAndRace(false);
-  });
-  practiceBtn.addEventListener('click', ()=>{
-    if(!playerNameInput.value.trim()) playerNameInput.value = languageText().guest;
-    initRunners();
-    startCountdownAndRace(true);
-  });
-  resetLocalBtn.addEventListener('click', ()=>{ if(confirm('清空本地排行？\n로컬 랭킹을 초기화하시겠습니까?')){ localStorage.removeItem(STORAGE_KEY); updateLeaderboardUI(); } });
-
-  modalClose.addEventListener('click', ()=>{ overlay.style.display = 'none'; overlay.setAttribute('aria-hidden','true'); });
-
-  volRange.addEventListener('input', ()=>{ volume = parseFloat(volRange.value); });
-
-  uploadToggle.addEventListener('change', ()=>{
-    if(uploadToggle.checked){
-      try{ initFirebase(); alert('启用 Firebase 上传 — 请确保 firebaseConfig 已正确填写并允许写入'); }catch(e){ console.warn(e); alert('Firebase 初始化失败，请检查配置。'); uploadToggle.checked=false; }
-    }
-  });
-
-  // ========== countdown & race control ==========
-  function startCountdownAndRace(isPractice){
-    // small intro animation done inside countdown
-    countdown(3).then(()=>{
-      // start footsteps
-      if(volume > 0) startFootsteps();
-      running = true;
-      raceStartTs = performance.now();
-      lastTs = performance.now();
-      raf = requestAnimationFrame(loop);
-    });
-  }
-
-  function countdown(n){
-    return new Promise(resolve=>{
-      let i = n;
-      function showBig(text){
-        drawScene();
-        ctx.save();
-        ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.strokeStyle = '#ff8da1';
-        ctx.font = 'bold 96px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(text, W/2, H/2);
-        ctx.restore();
-        playBeep(700 + i*40, 0.18);
-      }
-      function step(){
-        if(i > 0){ showBig(String(i)); i--; setTimeout(step, 800); }
-        else { showBig('Go!'); playBeep(1100,0.2); setTimeout(()=>{ drawScene(); resolve(); }, 700); }
-      }
-      step();
-    });
-  }
-
-  // ========== main loop ==========
-  function loop(ts){
-    raf = requestAnimationFrame(loop);
-    const now = performance.now();
-    const dtMs = Math.min(50, now - (lastTs || now));
-    const dt = Math.max(1, dtMs) / 16.6667;
-    lastTs = now;
-
-    update(dt);
-    drawScene();
-    updateHUD();
-    checkFinish();
-  }
-
-  function update(dt){
-    if(!running) return;
-    // player controls: accelerate / lane / sprint
-    if(keys['ArrowUp'] || keys['w'] || keys['W']){
-      if(player.stamina > 5){
-        player.speed = Math.min(player.maxSpeed, player.speed + 0.26 * dt);
-        player.stamina = Math.max(0, player.stamina - 0.12 * dt);
-      } else {
-        player.speed = Math.max(0, player.speed - 0.06 * dt);
-      }
+      ctx.fillStyle = '#fff'; ctx.fillRect(this.x + 10, y - 7, 6, 6); ctx.fillRect(this.x + 26, y - 7, 6, 6);
     } else {
-      player.speed = Math.max(0, player.speed - 0.04 * dt);
-      player.stamina = Math.min(100, player.stamina + 0.06 * dt);
-    }
-
-    // lane left/right immediate action
-    if(keys['ArrowLeft'] || keys['a'] || keys['A']){ changeLane(-1); keys['ArrowLeft']=keys['a']=keys['A']=false; }
-    if(keys['ArrowRight'] || keys['d'] || keys['D']){ changeLane(1); keys['ArrowRight']=keys['d']=keys['D']=false; }
-
-    // space sprint
-    if(keys[' '] || keys['Spacebar'] || keys['Space']){
-      attemptSprint();
-      keys[' '] = keys['Spacebar'] = keys['Space'] = false;
-    }
-
-    // update player pos
-    player.x += player.speed * dt;
-    if(player.x >= FINISH_X && !player.finished){ player.x = FINISH_X; player.finished = true; player.finishTime = (performance.now() - raceStartTs)/1000; stopFootsteps(); }
-
-    // update AI
-    for(let i=1;i<runners.length;i++){
-      const r = runners[i];
-      if(r.finished){ r.x += 0.08 * dt; continue; }
-      const dist = FINISH_X - r.x;
-      if(dist < 220 && Math.random() < 0.018){ r.speed = Math.min(r.maxSpeed + 1.6, r.speed + 0.9); }
-      else { r.speed = Math.min(r.maxSpeed, r.speed + (0.02 + Math.random()*0.03) * dt); }
-      if(Math.random() < 0.003) r.lane = Math.max(0, Math.min(LANES-1, r.lane + (Math.random()<0.5?-1:1)));
-      r.x += r.speed * dt;
-      if(r.x >= FINISH_X){ r.x = FINISH_X; r.finished = true; r.finishTime = (performance.now() - raceStartTs)/1000; }
-    }
-
-    // sprint cooldown
-    if(player.sprintCooldown > 0){ player.sprintCooldown = Math.max(0, player.sprintCooldown - dt/60); if(player.sprintCooldown === 0) player.isSprinting=false; }
-  }
-
-  function attemptSprint(){
-    if(!running) return;
-    if(player.sprintCooldown > 0) return;
-    if(player.stamina < 12) return;
-    player.isSprinting = true;
-    player.speed = Math.min(player.maxSpeed + 3.6, player.speed + 3.0);
-    player.stamina = Math.max(0, player.stamina - 20);
-    player.sprintCooldown = 3.2;
-    playBeep(880,0.12);
-  }
-
-  // ========== finish & scoring ==========
-  function checkFinish(){
-    const allFinished = runners.every(r => r.finished);
-    if(allFinished){
-      finishRace();
-      return;
-    }
-    if(player.finished){
-      const faster = runners.filter(r=>r.finished && r.finishTime < player.finishTime);
-      if(faster.length === 0){
-        finishRace();
-      } else {
-        const done = runners.filter(r=>r.finished).length;
-        if(done >= Math.ceil(RUNNERS/2)) finishRace();
+      // pixel style: draw simple sprite-like rectangles (8-frame illusion)
+      // we simulate animation by offsetting small rectangles
+      const t = Math.floor((performance.now()/80) % 8);
+      ctx.fillStyle = this.color;
+      // body blocks
+      for(let i=0;i<4;i++){
+        const ox = (i-1.5)*6;
+        const dy = ((i+t)%2===0)?-2:2;
+        ctx.fillRect(this.x + this.width/2 + ox -6, y+dy, 6, 6);
       }
+      // head
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(this.x + this.width/2 -6, y-12, 12, 8);
     }
+
+    // name
+    ctx.fillStyle = '#073047'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(this.name, this.x + this.width/2, y - this.height/1.5);
+  }
+}
+
+/* helper roundRect */
+function roundRect(ctx,x,y,w,h,r){
+  if(w<2*r) r=w/2; if(h<2*r) r=h/2;
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+/* ========== init runners & UI ========== */
+function initRunners(){
+  const colors = ['#ff8da1','#ffd36b','#8de6ff','#bfe87d','#cdb2ff'];
+  runners = [];
+  for(let i=0;i<RUNNERS;i++){
+    const isPlayer = (i===0);
+    const name = isPlayer ? (playerNameInput.value.trim() || (languageText().guest)) : 'AI-'+i;
+    runners.push(new Runner(name, colors[i%colors.length], isPlayer));
+  }
+  player = runners[0];
+  updateLeaderboardUI();
+  drawScene();
+}
+initRunners();
+
+function languageText(){ return { guest: '游客 / 게스트' }; }
+
+/* ========== controls ========== */
+window.addEventListener('keydown', (e)=>{ keys[e.key]=true; if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault(); });
+window.addEventListener('keyup', (e)=>{ keys[e.key]=false; });
+
+canvas.addEventListener('touchstart', (ev)=>{ ev.preventDefault(); const t = ev.touches[0]; const rect=canvas.getBoundingClientRect(); const y = t.clientY-rect.top; if(y < H/2) changeLane(-1); else changeLane(1); const now=performance.now(); if(now - (canvas._lastTap||0) < 300) attemptSprint(); canvas._lastTap = now; }, {passive:false});
+
+function changeLane(delta){ player.lane = Math.max(0, Math.min(LANES-1, player.lane + delta)); }
+
+/* UI button events */
+startBtn.addEventListener('click', ()=>{ if(!playerNameInput.value.trim()) playerNameInput.value = languageText().guest; initRunners(); playClick(); startCountdownAndRace(false); });
+practiceBtn.addEventListener('click', ()=>{ if(!playerNameInput.value.trim()) playerNameInput.value = languageText().guest; initRunners(); startCountdownAndRace(true); });
+restartBtn.addEventListener('click', ()=>{ if(confirm('重置本地排行并刷新？/ 로컬 랭킹을 초기화하고 새로고침하시겠습니까?')){ localStorage.removeItem(STORAGE_KEY); initRunners(); updateLeaderboardUI(); drawScene(); } });
+
+modalClose.addEventListener('click', ()=>{ overlay.style.display='none'; overlay.setAttribute('aria-hidden','true'); });
+
+volRange.addEventListener('input', ()=>{ volume = parseFloat(volRange.value); });
+
+uploadToggle.addEventListener('change', ()=>{
+  if(uploadToggle.checked){ try{ initFirebase(); alert('已启用 Firebase 上传（请确保配置已填写）'); }catch(e){ alert('Firebase 初始化失败，请检查配置'); uploadToggle.checked=false; } }
+});
+
+/* ========== countdown & race ========== */
+function startCountdownAndRace(isPractice){
+  countdown(3).then(()=>{ if(sfxToggle.checked) startFootsteps(); running = true; raceStartTs = performance.now(); lastTs = performance.now(); raf = requestAnimationFrame(loop); });
+}
+function countdown(n){
+  return new Promise(resolve=>{
+    let i = n;
+    function showBig(text){
+      drawScene();
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font='bold 96px sans-serif'; ctx.textAlign='center';
+      ctx.fillText(text, W/2, H/2);
+      ctx.restore();
+      if(sfxToggle.checked) playBeep(700 + i*40, 0.18);
+    }
+    function step(){
+      if(i>0){ showBig(String(i)); i--; setTimeout(step, 800); }
+      else { showBig('Go!'); playBeep(1100,0.2); setTimeout(()=>{ drawScene(); resolve(); }, 700); }
+    }
+    step();
+  });
+}
+
+/* ========== main loop ========== */
+function loop(){
+  raf = requestAnimationFrame(loop);
+  const now = performance.now();
+  const dtMs = Math.min(50, now - (lastTs || now));
+  const dt = Math.max(1, dtMs) / 16.6667;
+  lastTs = now;
+
+  update(dt);
+  drawScene();
+  updateHUD();
+  checkFinish();
+}
+
+function update(dt){
+  if(!running) return;
+  // acceleration
+  if(keys['ArrowUp'] || keys['w'] || keys['W']){
+    if(player.stamina > 5){ player.speed = Math.min(player.maxSpeed, player.speed + 0.26 * dt); player.stamina = Math.max(0, player.stamina - 0.12 * dt); }
+    else player.speed = Math.max(0, player.speed - 0.06 * dt);
+  } else {
+    player.speed = Math.max(0, player.speed - 0.04 * dt);
+    player.stamina = Math.min(100, player.stamina + 0.06 * dt);
   }
 
-  function finishRace(){
-    if(!running) return;
-    running = false;
-    cancelAnimationFrame(raf);
-    stopFootsteps();
-    // compute standings
-    const standings = runners.slice().sort((a,b)=>{
-      if(a.finished && b.finished) return a.finishTime - b.finishTime;
-      if(a.finished && !b.finished) return -1;
-      if(!a.finished && b.finished) return 1;
-      return b.x - a.x;
+  // lane change immediate
+  if(keys['ArrowLeft'] || keys['a'] || keys['A']){ changeLane(-1); keys['ArrowLeft']=keys['a']=keys['A']=false; }
+  if(keys['ArrowRight'] || keys['d'] || keys['D']){ changeLane(1); keys['ArrowRight']=keys['d']=keys['D']=false; }
+
+  // sprint
+  if(keys[' '] || keys['Spacebar'] || keys['Space']){ attemptSprint(); keys[' '] = keys['Spacebar'] = keys['Space'] = false; }
+
+  // update player and AIs
+  player.x += player.speed * dt;
+  if(player.x >= FINISH_X && !player.finished){ player.x = FINISH_X; player.finished=true; player.finishTime=(performance.now()-raceStartTs)/1000; stopFootsteps(); }
+
+  for(let i=1;i<runners.length;i++){
+    const r = runners[i];
+    if(r.finished){ r.x += 0.08 * dt; continue; }
+    const dist = FINISH_X - r.x;
+    if(dist < 220 && Math.random() < 0.018) r.speed = Math.min(r.maxSpeed + 1.6, r.speed + 0.9);
+    else r.speed = Math.min(r.maxSpeed, r.speed + (0.02 + Math.random()*0.03) * dt);
+    if(Math.random() < 0.003) r.lane = Math.max(0, Math.min(LANES-1, r.lane + (Math.random()<0.5?-1:1)));
+    r.x += r.speed * dt;
+    if(r.x >= FINISH_X){ r.x = FINISH_X; r.finished = true; r.finishTime=(performance.now()-raceStartTs)/1000; }
+  }
+
+  if(player.sprintCooldown > 0){ player.sprintCooldown = Math.max(0, player.sprintCooldown - dt/60); if(player.sprintCooldown===0) player.isSprinting=false; }
+}
+
+function attemptSprint(){
+  if(!running) return;
+  if(player.sprintCooldown > 0) return;
+  if(player.stamina < 12) return;
+  player.isSprinting = true;
+  player.speed = Math.min(player.maxSpeed + 3.6, player.speed + 3.0);
+  player.stamina = Math.max(0, player.stamina - 20);
+  player.sprintCooldown = 3.2;
+  if(sfxToggle.checked) playBeep(880,0.12);
+}
+
+/* ========== finish & scoring ========== */
+function checkFinish(){
+  const allFinished = runners.every(r=>r.finished);
+  if(allFinished){ finishRace(); return; }
+  if(player.finished){
+    const faster = runners.filter(r=>r.finished && r.finishTime < player.finishTime);
+    if(faster.length === 0) finishRace();
+    else {
+      const done = runners.filter(r=>r.finished).length;
+      if(done >= Math.ceil(RUNNERS/2)) finishRace();
+    }
+  }
+}
+
+function finishRace(){
+  if(!running) return;
+  running = false;
+  cancelAnimationFrame(raf);
+  stopFootsteps();
+
+  const standings = runners.slice().sort((a,b)=>{
+    if(a.finished && b.finished) return a.finishTime - b.finishTime;
+    if(a.finished && !b.finished) return -1;
+    if(!a.finished && b.finished) return 1;
+    return b.x - a.x;
+  });
+
+  let html = '<div style="display:flex;flex-direction:column;gap:8px">';
+  html += '<div style="font-weight:800">最终排名 / 최종 순위</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:6px">';
+  standings.forEach((s, idx)=>{ const medal = idx===0?'🥇':(idx===1?'🥈':(idx===2?'🥉':(idx+1)+'.')); html += `<div style="display:flex;justify-content:space-between"><div>${medal} ${escapeHtml(s.name)}</div><div>${s.finished? s.finishTime.toFixed(3)+'s':'DNF'}</div></div>`; });
+  html += '</div>';
+
+  const playerRank = standings.findIndex(x=>x===player)+1;
+  const playerTime = player.finishTime || ((performance.now()-raceStartTs)/1000);
+  const avgSpeed = computeAverageSpeed(player);
+  const score = computeScore(playerRank, playerTime, avgSpeed);
+
+  html += `<div style="margin-top:10px;padding:8px;border-radius:8px;background:#fff7e6">你的成绩：<br/>名次: ${playerRank} · 用时: ${playerTime.toFixed(3)} s · 平均速度: ${avgSpeed.toFixed(2)} · 得分: <strong>${score}</strong></div>`;
+  html += '</div>';
+
+  modalTitle.textContent = '比赛结果 / 경기 결과';
+  modalBody.innerHTML = html;
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden','false');
+
+  if(sfxToggle.checked) playCheer();
+
+  const rec = { name: player.name, score, time: Number(playerTime.toFixed(3)), rank: playerRank, avgSpeed: Number(avgSpeed.toFixed(3)), ts: Date.now() };
+  saveLocalRecord(rec);
+  updateLeaderboardUI();
+
+  if(uploadToggle.checked){
+    try{
+      initFirebase();
+      const dbRef = firebase.database().ref('race_scores');
+      dbRef.push(rec).then(()=>{ console.log('uploaded'); }).catch(err=>{ console.warn('firebase push err', err); alert('上传失败，请检查 Firebase 配置与规则'); });
+    }catch(e){ console.warn('firebase error', e); }
+  }
+}
+
+function computeAverageSpeed(runner){
+  const dist = Math.max(1, Math.abs((runner.finishTime ? (FINISH_X - START_X) : (runner.x - START_X))));
+  const time = (runner.finishTime ? runner.finishTime : Math.max(0.1, (performance.now()-raceStartTs)/1000));
+  return dist / time;
+}
+
+function computeScore(rank, time, avgSpeed){
+  const base = (RUNNERS - rank + 1) * 1000;
+  const speedBonus = Math.round(avgSpeed * 6);
+  const timePenalty = Math.round(time * 10);
+  const comboBonus = (comboToggle.checked ? Math.round((player.combo || 0) * 15) : 0);
+  return Math.max(0, base + speedBonus - timePenalty + comboBonus + Math.floor(Math.random()*60));
+}
+
+/* ========== local leaderboard ========== */
+function saveLocalRecord(rec){
+  let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  arr.push(rec);
+  arr.sort((a,b)=>b.score - a.score);
+  if(arr.length>200) arr = arr.slice(0,200);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+function updateLeaderboardUI(){
+  let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  arr.sort((a,b)=>b.score - a.score);
+  leaderList.innerHTML = '';
+  if(arr.length === 0){ leaderList.innerHTML = '<div class="tip">暂无记录 / 기록 없음</div>'; return; }
+  arr.slice(0,10).forEach((it, idx)=>{
+    const el = document.createElement('div'); el.className='item';
+    const medal = idx===0?'🥇':(idx===1?'🥈':(idx===2?'🥉':(idx+1)+'.'));
+    el.innerHTML = `<div class="rank">${medal}</div><div class="pname">${escapeHtml(it.name)}</div><div class="pscore">${it.score}</div>`;
+    leaderList.appendChild(el);
+  });
+}
+
+/* ========== render ========== */
+function drawScene(){
+  ctx.clearRect(0,0,W,H);
+  // sky gradient
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#fffbf0'); g.addColorStop(1,'#dff7ff');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+  // crowd bars
+  for(let i=0;i<40;i++){ const h = 12 + ((i*23)%60); ctx.fillStyle = `rgba(7,48,71,${0.02 + (i%3)*0.006})`; ctx.fillRect(i*(W/40), 48, (W/40)-3, h); }
+
+  // lanes
+  for(let i=0;i<LANES;i++){
+    const y = i*LANE_H;
+    ctx.fillStyle = i%2===0 ? '#fff8f0' : '#fff3e6';
+    ctx.fillRect(0, y, W, LANE_H);
+    ctx.beginPath(); ctx.setLineDash([10,8]); ctx.moveTo(0, y+LANE_H); ctx.lineTo(W, y+LANE_H); ctx.strokeStyle='rgba(7,48,71,0.06)'; ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  // start & finish
+  ctx.fillStyle='#073047'; ctx.font='bold 14px sans-serif'; ctx.fillText('Start / 출발', START_X - 60, 26);
+  for(let i=0;i<10;i++){ ctx.fillStyle = (i%2===0)?'#ffffff':'#000000'; ctx.fillRect(FINISH_X + (i%2===0?0:8), 6, 8, H-12); }
+  ctx.fillStyle = '#073047'; ctx.fillText('Finish / 결승', FINISH_X + 12, 26);
+
+  // draw AI then player with chosen style
+  const style = styleSelect.value;
+  runners.forEach(r=>{ if(!r.isPlayer) r.draw(ctx, style); });
+  player.draw(ctx, style);
+
+  // HUD distance
+  ctx.fillStyle='#073047'; ctx.font='12px sans-serif';
+  ctx.fillText(`距离 / 거리：${Math.max(0, Math.round(FINISH_X - player.x))} px`, W-180, 26);
+}
+
+/* ========== HUD update ========== */
+function updateHUD(){
+  const elapsed = running ? ((performance.now()-raceStartTs)/1000).toFixed(3) : '0.000';
+  timeVal.textContent = (running?elapsed:'0.000') + ' s';
+  const rank = computeRank(); rankVal.textContent = rank + ' / ' + RUNNERS;
+  const avgSp = player.finished ? computeAverageSpeed(player) : computeAverageSpeed(player);
+  speedVal.textContent = avgSp.toFixed(2);
+  staminaVal.textContent = Math.round(player.stamina) + '%';
+}
+
+function computeRank(){
+  const arr = runners.slice().sort((a,b)=>{
+    if(a.finished && b.finished) return a.finishTime - b.finishTime;
+    if(a.finished && !b.finished) return -1;
+    if(!a.finished && b.finished) return 1;
+    return b.x - a.x;
+  });
+  return arr.findIndex(r=>r===player) + 1;
+}
+
+/* ========== utilities ========== */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* ========== start/stop helpers ========== */
+function startFootstepsInner(){ if(footstepsTimer) return; footstepsTimer = setInterval(()=>{ if(running && sfxToggle.checked) playBeep(700 + Math.random()*120, 0.06); }, 160); }
+function stopFootsteps(){ if(window.footstepsTimer){ clearInterval(window.footstepsTimer); window.footstepsTimer=null; } }
+window.footstepsTimer = null;
+
+/* ========== reset & init ========== */
+function resetAll(){
+  initRunners();
+  running=false; cancelAnimationFrame(raf); drawScene(); updateLeaderboardUI();
+}
+resetAll();
+
+/* ========== leaderboard firebase read (if enabled) ========== */
+function loadFirebaseTop(){
+  try{
+    initFirebase();
+    const ref = firebase.database().ref('race_scores').orderByChild('score').limitToLast(10);
+    ref.on('value', snap=>{
+      const arr=[]; snap.forEach(s=>arr.push(s.val())); arr.sort((a,b)=>b.score-a.score);
+      // merge with local display
+      leaderList.innerHTML = '';
+      arr.slice(0,10).forEach((it,idx)=>{ const el=document.createElement('div'); el.className='item'; const medal=idx===0?'🥇':(idx===1?'🥈':(idx===2?'🥉':(idx+1)+'.')); el.innerHTML=`<div class="rank">${medal}</div><div class="pname">${escapeHtml(it.name)}</div><div class="pscore">${it.score}</div>`; leaderList.appendChild(el); });
     });
+  }catch(e){ console.warn('firebase read failed', e); }
+}
 
-    // generate result card
-    let resultHtml = '<div style="display:flex;flex-direction:column;gap:8px">';
-    resultHtml += '<div style="font-weight:800">最终排名 / 최종 순위</div>';
-    resultHtml += '<div style="display:flex;flex-direction:column;gap:6px">';
-    standings.forEach((s, idx)=>{
-      const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}.`));
-      resultHtml += `<div style="display:flex;justify-content:space-between"><div>${medal} ${escapeHtml(s.name)}</div><div>${s.finished ? s.finishTime.toFixed(3)+'s' : 'DNF'}</div></div>`;
-    });
-    resultHtml += '</div>';
+/* ========== local leaderboard update on load ========== */
+function updateLeaderboardUI(){ updateLeaderboardFromLocal(); if(uploadToggle.checked) loadFirebaseTop(); }
+function updateLeaderboardFromLocal(){
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); arr.sort((a,b)=>b.score - a.score);
+  leaderList.innerHTML=''; if(arr.length===0){ leaderList.innerHTML='<div class="tip">暂无记录 / 기록 없음</div>'; return; }
+  arr.slice(0,10).forEach((it,idx)=>{ const el=document.createElement('div'); el.className='item'; const medal=idx===0?'🥇':(idx===1?'🥈':(idx===2?'🥉':(idx+1)+'.')); el.innerHTML=`<div class="rank">${medal}</div><div class="pname">${escapeHtml(it.name)}</div><div class="pscore">${it.score}</div>`; leaderList.appendChild(el); });
+}
 
-    // compute score for player
-    const playerRank = standings.findIndex(x=>x === player) + 1;
-    const playerTime = player.finishTime || ((performance.now() - raceStartTs)/1000);
-    const avgSpeed = computeAverageSpeed(player);
-    const score = computeScore(playerRank, playerTime, avgSpeed);
+/* ========== expose quickStart (console) ========== */
+window.quickStart = ()=>{ if(!playerNameInput.value.trim()) playerNameInput.value=languageText().guest; initRunners(); startCountdownAndRace(false); };
 
-    resultHtml += `<div style="margin-top:10px;padding:8px;border-radius:8px;background:#fff7e6">你的成绩：<br/>名次: ${playerRank} · 用时: ${playerTime.toFixed(3)} s · 平均速度: ${avgSpeed.toFixed(2)} · 得分: <strong>${score}</strong></div>`;
-
-    resultHtml += '</div>';
-
-    modalTitle.textContent = '比赛结果 / 경기 결과';
-    modalBody.innerHTML = resultHtml;
-    overlay.style.display = 'flex';
-    overlay.setAttribute('aria-hidden','false');
-
-    // play cheer
-    playCheer();
-
-    // save to local leaderboard
-    const rec = { name: player.name, score, time: Number(playerTime.toFixed(3)), rank: playerRank, avgSpeed: Number(avgSpeed.toFixed(3)), ts: Date.now() };
-    saveLocalRecord(rec);
-    updateLeaderboardUI();
-
-    // if upload enabled, push to Firebase
-    if(uploadToggle.checked){
-      try{
-        initFirebase();
-        const dbRef = firebase.database().ref('race_scores');
-        dbRef.push(rec).then(()=>{ console.log('uploaded to firebase'); }).catch(err=>{ console.warn('firebase push err', err); alert('上传失败，请检查 Firebase 配置与规则'); });
-      }catch(e){
-        console.warn('firebase error', e);
-      }
-    }
-  }
-
-  function computeAverageSpeed(runner){
-    // average speed = distance / time (distance = FINISH_X - START_X)
-    const dist = Math.max(1, Math.abs((runner.finishTime ? (FINISH_X - START_X) : (runner.x - START_X))));
-    const time = (runner.finishTime ? runner.finishTime : Math.max(0.1, (performance.now() - raceStartTs)/1000));
-    // px per second -> normalize scale factor to "game units" for display; but we just supply px/sec
-    return dist / time;
-  }
-
-  function computeScore(rank, time, avgSpeed){
-    // formula: base by rank + speed bonus - time penalty
-    const base = (RUNNERS - rank + 1) * 1000;
-    const speedBonus = Math.round(avgSpeed * 6);
-    const timePenalty = Math.round(time * 10);
-    return Math.max(0, base + speedBonus - timePenalty + Math.floor(Math.random()*50));
-  }
-
-  // ========== leaderboard localStorage ==========
-  function saveLocalRecord(rec){
-    let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    arr.push(rec);
-    arr.sort((a,b)=>b.score - a.score);
-    if(arr.length > 200) arr = arr.slice(0,200);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-  }
-
-  function updateLeaderboardUI(){
-    const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    arr.sort((a,b)=>b.score - a.score);
-    leaderListEl.innerHTML = '';
-    if(arr.length === 0){
-      leaderListEl.innerHTML = '<div class="small">暂无记录 / 기록 없음</div>';
-      return;
-    }
-    arr.slice(0,10).forEach((it, idx)=>{
-      const el = document.createElement('div'); el.className = 'item';
-      const medal = idx === 0 ? '🥇' : (idx===1 ? '🥈' : (idx===2 ? '🥉' : (idx+1)+'.'));
-      el.innerHTML = `<div class="rank">${medal}</div><div class="pname">${escapeHtml(it.name)}</div><div class="pscore">${it.score}</div>`;
-      leaderListEl.appendChild(el);
-    });
-  }
-
-  // ========== draw scene ==========
-  function drawScene(){
-    ctx.clearRect(0,0,W,H);
-    // cute background pattern
-    const g = ctx.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'#fffbf0'); g.addColorStop(1,'#dff7ff');
-    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
-
-    // decorative clouds
-    for(let i=0;i<6;i++){
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      const cx = (i*170 + 50) % W;
-      ctx.beginPath(); ctx.ellipse(cx, 70 + (i%2)*6, 60, 24, 0, 0, Math.PI*2); ctx.fill();
-    }
-
-    // lanes
-    for(let i=0;i<LANES;i++){
-      const y = i*LANE_H;
-      ctx.fillStyle = i%2===0 ? '#fff8f0' : '#fff3e6';
-      ctx.fillRect(0, y, W, LANE_H);
-      // track stripe
-      ctx.beginPath(); ctx.setLineDash([10,8]); ctx.moveTo(0, y + LANE_H); ctx.lineTo(W, y + LANE_H); ctx.strokeStyle = 'rgba(7,48,71,0.06)'; ctx.stroke(); ctx.setLineDash([]);
-    }
-
-    // start text
-    ctx.fillStyle = '#073047'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('Start / 출발', START_X - 60, 26);
-
-    // finish stripes
-    for(let i=0;i<10;i++){
-      ctx.fillStyle = (i%2===0)?'#ffffff':'#000000';
-      ctx.fillRect(FINISH_X + (i%2===0?0:8), 6, 8, H-12);
-    }
-    ctx.fillStyle = '#073047'; ctx.fillText('Finish / 결승', FINISH_X + 12, 26);
-
-    // draw AI then player
-    runners.forEach(r => { if(!r.isPlayer) r.draw(ctx); });
-    player.draw(ctx);
-
-    // small HUD decorations
-    ctx.fillStyle = '#073047'; ctx.font = '12px sans-serif';
-    ctx.fillText(`距离：${Math.max(0, Math.round((FINISH_X - player.x)))} px`, W - 180, 26);
-  }
-
-  function updateHUD(){
-    const elapsed = running ? ((performance.now() - raceStartTs)/1000).toFixed(3) : '0.000';
-    timeVal.textContent = (running ? elapsed : '0.000') + ' s';
-    const rank = computeRank(); rankVal.textContent = rank + ' / ' + RUNNERS;
-    const avgSp = player.finished ? computeAverageSpeed(player) : computeAverageSpeed(player);
-    speedVal.textContent = avgSp.toFixed(2);
-    staminaVal.textContent = Math.round(player.stamina) + '%';
-  }
-
-  function computeRank(){
-    const arr = runners.slice().sort((a,b)=>{
-      if(a.finished && b.finished) return a.finishTime - b.finishTime;
-      if(a.finished && !b.finished) return -1;
-      if(!a.finished && b.finished) return 1;
-      return b.x - a.x;
-    });
-    return arr.findIndex(r=>r===player) + 1;
-  }
-
-  // helpers
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-  // ========== start footstep loop helper ==========
-  function startFootsteps(){ startFootstepsInner(); }
-  function startFootstepsInner(){
-    if(footstepsTimer) return;
-    footstepsTimer = setInterval(()=>{ if(running && volume>0) playBeep(700 + Math.random()*120, 0.06); }, 160);
-  }
-  function stopFootsteps(){ if(window.footstepsTimer){ clearInterval(window.footstepsTimer); window.footstepsTimer = null; } }
-  window.footstepsTimer = null;
-
-  // ========== misc UI init ==========
-  function resetAll(){
-    initRunners();
-    running = false;
-    cancelAnimationFrame(raf);
-    drawScene();
-    updateLeaderboardUI();
-  }
-
-  resetAll();
-
-  // expose quick-start for convenience
-  window.quickStart = ()=>{ if(!playerNameInput.value.trim()) playerNameInput.value = languageText().guest; startCountdownAndRace(false); };
-
-  </script>
+</script>
 </body>
 </html>
