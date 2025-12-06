@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>跑步小游戏 - Firebase 排行版</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(#7ec8ff, #ffffff);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #loginBox {
+        margin-top: 40px;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    #gameContainer {
+        display: none;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    canvas {
+        background: #c7f7c4;
+        border: 3px solid #444;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    #leaderboard {
+        margin-top: 20px;
+        width: 300px;
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    #leaderboard h3 {
+        margin: 0 0 10px 0;
+        text-align: center;
+    }
+
+    ol { padding-left: 20px; }
+</style>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+</head>
+<body>
+
+<div id="loginBox">
+    <h2>跑步游戏 登录</h2>
+    <input id="playerName" placeholder="请输入姓名" />
+    <button onclick="startGame()">开始游戏</button>
+</div>
+
+<div id="gameContainer">
+    <h2 id="welcomeText"></h2>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <h3 id="statusText"></h3>
+</div>
+
+<div id="leaderboard">
+    <h3>实时排行榜（Top 10）</h3>
+    <ol id="rankList"></ol>
+</div>
+
+<script>
+// Firebase 配置
+const firebaseConfig = {
+  apiKey: "AIzaSyCOMPvtQwfVuikgAmNh48_Gse5XeXv_XeU",
+  authDomain: "game-b1baf.firebaseapp.com",
+  projectId: "game-b1baf",
+  storageBucket: "game-b1baf.firebasestorage.app",
+  messagingSenderId: "746390398842",
+  appId: "1:746390398842:web:2fcdf6e067b3a65ac498c3",
+  measurementId: "G-6767ZMBG7E"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let playerName = "";
+let gameStarted = false;
+let score = 0;
+
+// 游戏对象
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player = { x: 50, y: 180, w: 30, h: 30, speed: 5 };
+let enemies = [];
+for (let i = 0; i < 4; i++) {
+    enemies.push({ x: 800 + i * 150, y: Math.random() * 350, w: 30, h: 30, speed: 2 + Math.random() * 3 });
+}
+
+let keys = {};
+document.addEventListener("keydown", (e) => (keys[e.key] = true));
+document.addEventListener("keyup", (e) => (keys[e.key] = false));
+
+function startGame() {
+    const nameInput = document.getElementById("playerName").value.trim();
+
+    if (!nameInput) return alert("请输入姓名");
+
+    playerName = nameInput;
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("gameContainer").style.display = "block";
+    document.getElementById("welcomeText").innerText = `欢迎：${playerName}`;
+
+    gameStarted = true;
+    gameLoop();
+}
+
+function update() {
+    if (!gameStarted) return;
+
+    if (keys["ArrowUp"]) player.y -= player.speed;
+    if (keys["ArrowDown"]) player.y += player.speed;
+    if (keys["ArrowLeft"]) player.x -= player.speed;
+    if (keys["ArrowRight"]) player.x += player.speed;
+
+    player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
+    player.y = Math.max(0, Math.min(canvas.height - player.h, player.y));
+
+    enemies.forEach((e) => {
+        e.x -= e.speed;
+        if (e.x < -50) {
+            e.x = 800;
+            e.y = Math.random() * 350;
+        }
+
+        if (
+            player.x < e.x + e.w &&
+            player.x + player.w > e.x &&
+            player.y < e.y + e.h &&
+            player.y + player.h > e.y
+        ) {
+            e.x = 800;
+            e.y = Math.random() * 350;
+            score++;
+            document.getElementById("statusText").innerText = `当前得分：${score}`;
+
+            if (score >= 4) endGame();
+        }
+    });
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#ff6f6f";
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+
+    ctx.fillStyle = "#444";
+    enemies.forEach((e) => ctx.fillRect(e.x, e.y, e.w, e.h));
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+function endGame() {
+    gameStarted = false;
+    document.getElementById("statusText").innerText = `你赢了！总得分：${score}`;
+
+    db.ref("scores/" + playerName).set({ name: playerName, score: score });
+}
+
+function updateLeaderboard() {
+    db.ref("scores").on("value", (snapshot) => {
+        const data = snapshot.val() || {};
+        const arr = Object.values(data).sort((a, b) => b.score - a.score).slice(0, 10);
+        const list = document.getElementById("rankList");
+        list.innerHTML = "";
+
+        arr.forEach((item, idx) => {
+            const li = document.createElement("li");
+            li.innerText = `${idx + 1}. ${item.name} — ${item.score}`;
+            list.appendChild(li);
+        });
+    });
+}
+
+updateLeaderboard();
+</script>
+
+</body>
+</html>
