@@ -3,68 +3,52 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>跑道竞速 · 달리기 레이스 — 单文件版 (GitHub Pages)</title>
+<title>跑道竞速 · 달리기 레이스（可玩版）</title>
 <style>
-  /* --- 基础视觉 --- */
   :root{
-    --bg-1: #081226;
-    --bg-2: #04293a;
-    --panel: rgba(255,255,255,0.03);
-    --accent: #39d98a;
-    --accent2:#66e0b3;
-    --muted:#9fb3bf;
-    --track:#15384a;
+    --bg1:#041322; --bg2:#07283a; --accent:#39d98a; --muted:#9fb3bf;
   }
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e8fbf0;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));}
-  .wrap{max-width:1200px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:14px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04241a}
+  body{margin:0;font-family:system-ui,Segoe UI,Inter,Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#eaf6ee}
+  .wrap{max-width:1100px;margin:18px auto;padding:18px}
+  header{display:flex;justify-content:space-between;align-items:center}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#66e0b3);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04241a}
   h1{margin:0;font-size:20px}
   .subtitle{color:var(--muted);font-size:13px}
 
-  /* 主区域 */
-  .main{display:flex;gap:16px}
-  .left{flex:1;display:flex;flex-direction:column;gap:12px}
-  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  input[type="text"]{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eafcf0;min-width:220px}
-  .btn{padding:8px 12px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04241a;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(60,200,120,0.12)}
-  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
-  .small{font-size:13px;color:var(--muted)}
+  .top-controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+  input[type="text"]{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eaf6ee;min-width:240px}
+  button{padding:9px 14px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),#66e0b3);color:#04241a;font-weight:700;cursor:pointer}
+  button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
 
-  /* 画布区 */
-  .game-area{display:flex;gap:12px;align-items:flex-start}
-  #stage{background:linear-gradient(180deg, #06202a, #02111a);border-radius:12px;position:relative;overflow:hidden;padding:12px;flex:1;min-height:480px}
-  canvas{display:block;border-radius:8px;background:transparent;max-width:100%;}
+  .main{display:flex;gap:14px;margin-top:14px}
+  .left{flex:1}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  #stage{border-radius:10px;overflow:hidden;padding:10px}
+  canvas{display:block;background:#02111a;border-radius:8px;max-width:100%}
 
-  .sidebar{width:300px;min-width:260px;display:flex;flex-direction:column;gap:12px}
+  .sidebar{width:320px;min-width:260px;display:flex;flex-direction:column;gap:12px}
+  .leader .list{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto}
+  .item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  .rank{width:28px;text-align:center;font-weight:800;color:var(--accent)}
+  .name{flex:1;color:#eaf6ee;font-weight:700}
+  .score{font-weight:800}
 
-  .leader h3{margin:0 0 8px 0;color:#dff7ea}
-  .leader .list{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto}
-  .leader .item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
-  .rank{width:30px;text-align:center;font-weight:800;color:var(--accent)}
-  .pname{flex:1;padding-left:8px;font-weight:700;color:#eaf6ee}
-  .pscore{font-weight:800;color:#fff}
-
-  .hud{display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .hud{display:flex;gap:8px;align-items:center;margin-top:10px}
   .stat{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;min-width:120px;text-align:center}
-  .stat .label{font-size:12px;color:var(--muted)}
-  .stat .val{font-weight:800;color:#eaf6ee;margin-top:6px}
+  .label{font-size:12px;color:var(--muted)}
+  .val{font-weight:800;margin-top:6px}
 
-  /* modal */
-  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(0deg, rgba(1,3,8,0.6), rgba(1,3,8,0.6));backdrop-filter:blur(4px)}
-  .modal{width:520px;background:#071124;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03)}
-  .modal h2{margin:0;color:#e6fbea}
+  footer{color:var(--muted);font-size:13px;margin-top:12px;text-align:center}
 
-  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:6px}
-
-  /* small responsive */
-  @media (max-width:980px){
+  /* modal like */
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45)}
+  .modal{background:#071124;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);width:90%;max-width:520px}
+  .modal h2{margin:0 0 8px 0;color:#eaf6ee}
+  @media (max-width:900px){
     .main{flex-direction:column}
     .sidebar{width:100%}
-    #stage{min-height:380px}
   }
 </style>
 </head>
@@ -75,607 +59,429 @@
         <div class="logo">跑</div>
         <div>
           <h1>跑道竞速 · 트랙 레이싱</h1>
-          <div class="subtitle">上/下换道 · 方向键控制 · 结果保存在本地排行（Top10）</div>
+          <div class="subtitle">↑/W 加速 · A/← 上道 · D/→ 下道 · Space 冲刺（冷却）</div>
         </div>
       </div>
-      <div class="small">中文 / 한국어 双语界面</div>
+      <div style="color:var(--muted)">单文件版本 — 可直接部署到 GitHub Pages</div>
     </header>
+
+    <div class="top-controls panel" style="margin-top:12px;display:flex;align-items:center;gap:10px">
+      <input id="playerName" type="text" placeholder="请输入姓名 / 이름을 입력하세요" />
+      <button id="startBtn">开始 · 시작</button>
+      <button id="restartBtn" class="ghost">重置排行榜 / 랭킹 초기화</button>
+      <div style="margin-left:auto;color:var(--muted)">本地排行榜保存在浏览器 / 로컬 스토리지에 저장</div>
+    </div>
 
     <div class="main">
       <div class="left">
-        <div class="panel controls">
-          <input id="nameInput" type="text" placeholder="请输入你的名字（中文） / 이름을 입력하세요 (한국어)" />
-          <button id="startBtn" class="btn">开始 · 시작</button>
-          <button id="helpBtn" class="btn ghost">帮助 / 도움말</button>
-          <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-            <div class="small">音效 / 효과음</div>
-            <label style="display:inline-flex;align-items:center;gap:6px">
-              <input id="soundToggle" type="checkbox" checked /> 开 / 켜짐
-            </label>
-          </div>
-        </div>
-
-        <div class="panel" id="stage" aria-live="polite">
-          <canvas id="canvas" width="920" height="420"></canvas>
+        <div id="stage" class="panel">
+          <canvas id="canvas" width="940" height="460"></canvas>
         </div>
 
         <div class="panel hud">
-          <div class="stat">
-            <div class="label">计时 / 타이머</div>
-            <div class="val" id="timeVal">0.000 s</div>
-          </div>
-          <div class="stat">
-            <div class="label">名次 / 순위</div>
-            <div class="val" id="rankVal">- / -</div>
-          </div>
-          <div class="stat">
-            <div class="label">冲刺冷却 / 스프린트 쿨다운</div>
-            <div class="val" id="sprintVal">Ready</div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="stat"><div class="label">计时 / 타이머</div><div class="val" id="timeVal">0.000 s</div></div>
+            <div class="stat"><div class="label">名次 / 순위</div><div class="val" id="rankVal">- / -</div></div>
+            <div class="stat"><div class="label">冲刺 / 스프린트</div><div class="val" id="sprintVal">Ready</div></div>
           </div>
         </div>
       </div>
 
       <aside class="sidebar">
         <div class="panel leader">
-          <h3>排行榜（Top10） / 실시간 랭킹</h3>
-          <div class="list" id="leaderList">
-            <div class="small">暂无记录 / 기록 없음</div>
-          </div>
-          <div style="margin-top:8px;color:var(--muted);font-size:13px">排名基于得分（名次+用时计算）。已保存到本地。</div>
+          <h3>排行榜 Top10 / 실시간 랭킹</h3>
+          <div class="list" id="leaderList"><div style="color:var(--muted)">暂无记录 / 기록 없음</div></div>
+          <div style="margin-top:8px;color:var(--muted);font-size:13px">名次由分数决定（名次+时间计算）</div>
         </div>
 
         <div class="panel">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="small">控制 / 조작</div>
-              <div style="font-weight:700">↑ / W : 加速 · A / ← : 上道 · D / → : 下道 · Space : 冲刺</div>
-            </div>
-            <div style="text-align:right">
-              <div class="small">版本 / 버전</div>
-              <div style="font-weight:700">单文件 · GitHub Pages</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="small">说明 / 설명</div>
+          <div style="font-weight:700">说明 / 설명</div>
           <div style="margin-top:8px;color:var(--muted);font-size:13px">
-            这是一个纯前端演示，排行榜保存在你的浏览器（localStorage）。如果你希望把排行榜改为 Firebase 实时数据库或加入用户登录，我可以把那段代码整合好（只需替换你的 firebaseConfig）。  
+            控制：↑/W 加速，A/← 上道，D/→ 下道，空格冲刺（短时，冷却）。目标：第一个通过终点获得最高分。<br>
+            조작: ↑/W 가속, A/← 위 레인, D/→ 아래 레인, 스페이스 스프린트.
           </div>
         </div>
       </aside>
     </div>
 
-    <footer>Made with ♥ — 单文件可部署到 GitHub Pages（直接上传 index.html）</footer>
+    <footer>Made with ♥ — 单文件 · GitHub Pages 可用</footer>
   </div>
 
-  <!-- Modal / 帮助 -->
-  <div id="overlay" class="overlay" role="dialog" aria-hidden="true">
-    <div class="modal">
-      <h2>帮助 · 도움말</h2>
-      <p class="small">按键说明：↑ / W 加速；A / ← 上道；D / → 下道；Space 冲刺（有冷却）。目标是第一个冲过终点线。</p>
-      <p class="small">게임 조작: ↑ / W 가속; A / ← 위 레인; D / → 아래 레인; Space 스프린트(쿨타임 있음). 목표: 먼저 결승선 통과!</p>
-      <div style="text-align:right;margin-top:12px"><button id="closeHelp" class="btn">关闭 / 닫기</button></div>
+  <!-- modal overlay -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 id="modalTitle">比赛结束 / 경기 종료</h2>
+      <div id="modalBody" style="color:var(--muted);margin-top:8px"></div>
+      <div style="text-align:right;margin-top:12px"><button id="modalClose">关闭 / 닫기</button></div>
     </div>
   </div>
 
-  <script>
-  /******************************************************************
-   * 单文件跑步竞速（纯前端） — 可直接部署到 GitHub Pages
-   * 中文 + 韩文 双语 UI
-   * 作者：ChatGPT（根据用户需求制作）
-   ******************************************************************/
+<script>
+/* ---------- 可运行的跑步竞赛单文件脚本 ---------- */
+/* 复制保存为 index.html 后直接打开或部署 GitHub Pages 即可游玩 */
 
-  // ====== 基本设置 ======
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d', { alpha: false });
-  const W = canvas.width, H = canvas.height;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
 
-  // UI 元素
-  const nameInput = document.getElementById('nameInput');
-  const startBtn = document.getElementById('startBtn');
-  const helpBtn = document.getElementById('helpBtn');
-  const overlay = document.getElementById('overlay');
-  const closeHelp = document.getElementById('closeHelp');
-  const leaderList = document.getElementById('leaderList');
-  const timeVal = document.getElementById('timeVal');
-  const rankVal = document.getElementById('rankVal');
-  const sprintVal = document.getElementById('sprintVal');
-  const soundToggle = document.getElementById('soundToggle');
+const playerNameInput = document.getElementById('playerName');
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const leaderList = document.getElementById('leaderList');
+const timeVal = document.getElementById('timeVal');
+const rankVal = document.getElementById('rankVal');
+const sprintVal = document.getElementById('sprintVal');
 
-  // Gameplay parameters
-  const LANES = 5;
-  const RUNNERS = 5; // 1 player + 4 AI
-  const PLAYER_INDEX = 0;
-  const OPP_COUNT = RUNNERS - 1;
-  const START_X = 80;
-  const FINISH_X = W - 90;
-  const LANE_H = H / LANES;
-  const MAX_TOP10 = 10;
+const overlay = document.getElementById('overlay');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+const modalClose = document.getElementById('modalClose');
 
-  // Runner template
-  class Runner {
-    constructor(name, color, isPlayer=false){
-      this.name = name;
-      this.color = color;
-      this.isPlayer = isPlayer;
-      this.reset();
-    }
-    reset(){
-      this.x = START_X;
-      this.lane = Math.floor(LANES/2) + (this.isPlayer ? 0 : (Math.random() < 0.5 ? -1 : 1));
-      this.speed = this.isPlayer ? 0 : 2 + Math.random()*2.4; // px/frame
-      this.maxSpeed = this.isPlayer ? 7.5 : (3.2 + Math.random()*2.0);
-      this.width = 36; this.height = 28;
-      this.finished = false;
-      this.finishTime = null;
-      this.sprintReady = true;
-      this.cooldown = 0;
-      this.colorPulse = 0;
-    }
-    update(dt){
-      if(this.finished) return;
-      // player control handled outside
-      this.x += this.isPlayer ? this.speed * dt : this.speed * dt;
-      // minor lane drift for AI
-      if(!this.isPlayer && Math.random() < 0.002) {
-        const d = Math.random() < 0.5 ? -1 : 1;
-        this.lane = Math.max(0, Math.min(LANES-1, this.lane + d));
-      }
-      if(this.x >= FINISH_X && !this.finished){
-        this.finished = true;
-        this.finishTime = (performance.now() - raceStartTime) / 1000.0;
-        // small slowdown after finish
-        this.speed = Math.max(0.6, this.speed * 0.4);
-      }
-      if(this.cooldown > 0) { this.cooldown = Math.max(0, this.cooldown - dt); if(this.cooldown === 0) this.sprintReady = true;}
-    }
-    draw(ctx){
-      const y = this.lane * LANE_H + LANE_H/2;
-      ctx.save();
-      // shadow
-      ctx.beginPath();
-      ctx.ellipse(this.x + this.width/2, y + this.height/1.6, this.width, this.height*0.6, 0, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      ctx.fill();
+const LANES = 5;
+const RUNNERS = 5; // 1 player + 4 AI
+const START_X = 80;
+const FINISH_X = W - 120;
+const LANE_H = H / LANES;
+const STORAGE_KEY = 'race_leaderboard_v2';
 
-      // body
-      roundRect(ctx, this.x, y - this.height/2, this.width, this.height, 8);
-      // pulsating for player
-      ctx.fillStyle = this.isPlayer ? `rgba(62,220,138,1)` : this.color;
-      ctx.fill();
+let runners = []; // array of {name,isPlayer,x,lane,speed,maxSpeed,finished,finishTime}
+let playerIdx = 0;
+let running = false;
+let raceStart = 0;
+let rafId = null;
+let keys = {};
+let sprintCooldown = 0;
 
-      // label
-      ctx.fillStyle = 'rgba(255,255,255,0.95)';
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(this.isPlayer ? (this.name || '你 / 당신') : this.name, this.x + this.width/2, y - this.height/1.5);
-      ctx.restore();
-    }
+function makeRunner(name, isPlayer=false, color='#3ddc84'){
+  return {
+    name: name,
+    isPlayer: !!isPlayer,
+    x: START_X,
+    lane: Math.floor(LANES/2),
+    speed: isPlayer ? 0 : 2 + Math.random()*2.0,
+    maxSpeed: isPlayer ? 6.5 : (3.2 + Math.random()*1.6),
+    width: 38, height:28,
+    color: color,
+    finished:false,
+    finishTime:null,
+    cooldown:0,
+    sprintReady:true
+  };
+}
+
+function initRace(){
+  runners = [];
+  const colors = ['#3ddc84','#ff6b6b','#ffb86b','#6fb3ff','#b07cff'];
+  // create player at index 0
+  runners.push(makeRunner('玩家 / 플레이어', true, colors[0]));
+  for(let i=1;i<RUNNERS;i++){
+    runners.push(makeRunner('AI-'+i, false, colors[i%colors.length]));
+    // spread AI lane to avoid overlap
+    runners[i].lane = Math.max(0, Math.min(LANES-1, Math.floor(LANES/2) + (i%2===0?i: -i)));
+    // offset start x slightly
+    runners[i].x = START_X - (20 + i*18);
   }
+  running = false;
+  sprintCooldown = 0;
+  updateUI();
+  render(); // initial draw
+}
 
-  // ===== 游戏状态 =====
-  let runners = [];
-  let player = null;
-  let running = false;
-  let raceStartTime = 0;
-  let raf = null;
-  let lastFrame = 0;
-  let keys = {};
-  let sprintCooldown = 0;
-
-  // ===== 初始化 =====
-  function initRunners() {
-    runners = [];
-    const colors = ['#3ddc84','#ff6b6b','#ffb86b','#6fb3ff','#b07cff'];
-    // 玩家 slot 0
-    player = new Runner('', colors[0], true);
-    runners.push(player);
-    for(let i=1;i<RUNNERS;i++){
-      runners.push(new Runner('AI-'+i, colors[i % colors.length], false));
-    }
+function startRace(){
+  const name = playerNameInput.value.trim();
+  if(!name){
+    alert('请输入姓名 / 이름을 입력하세요');
+    return;
   }
-
-  initRunners();
-  loadLocalLeaderboard();
-  renderStaticScene();
-
-  // ===== event binding =====
-  startBtn.addEventListener('click', ()=>{
-    const name = nameInput.value.trim();
-    if(!name){
-      alert('请输入姓名 / 이름을 입력하세요');
-      return;
-    }
-    player.name = name;
-    startRace();
+  runners[0].name = name;
+  // reset properties
+  runners.forEach((r, idx)=> {
+    r.x = START_X - (idx===0 ? 0 : (20 + idx*18));
+    r.speed = r.isPlayer ? 0 : (2 + Math.random()*2.0);
+    r.finished = false; r.finishTime = null;
+    r.cooldown = 0; r.sprintReady = true;
+    if(!r.isPlayer && Math.random()<0.5) r.lane = Math.floor(LANES/2) + (Math.random()<0.5? -1:1);
+    if(r.lane < 0) r.lane = 0; if(r.lane >= LANES) r.lane = LANES-1;
   });
-  helpBtn.addEventListener('click', ()=>{ overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden','false'); });
-  closeHelp.addEventListener('click', ()=>{ overlay.style.display = 'none'; overlay.setAttribute('aria-hidden','true'); });
+  running = true;
+  raceStart = performance.now();
+  keys = {};
+  sprintCooldown = 0;
+  // start loop
+  cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(loop);
+}
 
-  window.addEventListener('keydown', (e)=>{
-    keys[e.key] = true;
-    // prevent scroll
-    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
-    // sprint key
-    if((e.key === ' ' || e.key === 'Spacebar') && running){
-      trySprint();
-    }
-  });
-  window.addEventListener('keyup', (e)=>{ keys[e.key] = false; });
+function loop(){
+  rafId = requestAnimationFrame(loop);
+  const now = performance.now();
+  const dt = Math.min(40, now - (runners._lastTime || now)) / 16.6667;
+  runners._lastTime = now;
 
-  // touch controls (简单：点击画布上半部/下半部换道，双击冲刺)
-  let lastTap = 0;
-  canvas.addEventListener('touchstart', (ev)=>{
-    ev.preventDefault();
-    const t = ev.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const y = t.clientY - rect.top;
-    if(y < H/2){
-      // 上道
-      player.lane = Math.max(0, player.lane - 1);
+  update(dt);
+  render();
+  updateUI();
+  checkFinish();
+}
+
+function update(dt){
+  if(!running) return;
+  const elapsed = (performance.now() - raceStart) / 1000;
+  timeVal.textContent = elapsed.toFixed(3) + ' s';
+
+  // player control
+  const p = runners[0];
+  if((keys['ArrowUp'] || keys['w'] || keys['W'])) {
+    p.speed = Math.min(p.maxSpeed + 1.2, p.speed + 0.28*dt);
+  } else {
+    p.speed = Math.max(0, p.speed - 0.05*dt);
+  }
+
+  if((keys['ArrowLeft'] || keys['a'] || keys['A'])) {
+    // move up one lane then clear to avoid continuous moves
+    p.lane = Math.max(0, p.lane - 1);
+    keys['ArrowLeft'] = keys['a'] = keys['A'] = false;
+  }
+  if((keys['ArrowRight'] || keys['d'] || keys['D'])) {
+    p.lane = Math.min(LANES-1, p.lane + 1);
+    keys['ArrowRight'] = keys['d'] = keys['D'] = false;
+  }
+
+  // sprint via Space
+  if((keys[' ' ] || keys['Spacebar'] || keys['Space']) && p.sprintReady){
+    p.speed = Math.min(p.maxSpeed + 3.0, p.speed + 2.4);
+    p.sprintReady = false;
+    p.cooldown = 2.5; // seconds
+    keys[' '] = keys['Spacebar'] = keys['Space'] = false;
+  }
+
+  // update player x
+  p.x += p.speed * dt;
+  if(p.x >= FINISH_X && !p.finished){
+    p.finished = true;
+    p.finishTime = (performance.now() - raceStart)/1000;
+  }
+
+  // update AI
+  for(let i=1;i<runners.length;i++){
+    const r = runners[i];
+    if(r.finished) { r.x += 0.2*dt; continue; }
+    // AI acceleration behavior toward finish
+    const dist = FINISH_X - r.x;
+    if(dist < 180 && Math.random() < 0.02) {
+      r.speed = Math.min(r.maxSpeed + 1.0, r.speed + 0.8);
     } else {
-      player.lane = Math.min(LANES-1, player.lane + 1);
+      r.speed = Math.min(r.maxSpeed, r.speed + (0.02 + Math.random()*0.03)*dt);
     }
-    const now = performance.now();
-    if(now - lastTap < 300){ trySprint(); }
-    lastTap = now;
-  }, {passive:false});
-
-  // ===== 游戏逻辑 =====
-  function startRace(){
-    // reset
-    runners.forEach(r=>r.reset());
-    player.name = player.name || '玩家 / 플레이어';
-    running = false;
-    raceStartTime = 0;
-    lastFrame = performance.now();
-    sprintCooldown = 0;
-    // 倒计时 3..2..1
-    countdown(3).then(()=> {
-      running = true;
-      raceStartTime = performance.now();
-      lastFrame = performance.now();
-      loop();
-    });
+    r.x += r.speed * dt;
+    // random lane jitter occasionally
+    if(Math.random() < 0.002) r.lane = Math.max(0, Math.min(LANES-1, r.lane + (Math.random()<0.5?-1:1)));
+    if(r.x >= FINISH_X) {
+      r.finished = true; r.finishTime = (performance.now() - raceStart)/1000;
+    }
   }
 
-  function countdown(sec){
-    return new Promise(resolve=>{
-      let n = sec;
-      const boxW = 240;
-      const boxH = 120;
-      const showBox = (text) => {
-        // draw translucent modal with big number
-        ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-        ctx.fillRect(W/2 - boxW/2, H/2 - boxH/2, boxW, boxH);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 42px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(text, W/2, H/2 + 15);
-        ctx.restore();
-      };
-      (function tick(){
-        renderScene(); // base
-        if(n>0){
-          showBox(n.toString());
-        } else {
-          showBox('GO!');
-        }
-        if(n <= 0){
-          setTimeout(()=>{ renderScene(); resolve(); }, 700);
-        } else {
-          setTimeout(()=>{ n--; tick(); }, 900);
-        }
-      })();
-    });
-  }
-
-  function trySprint(){
-    if(!running) return;
-    if(player.cooldown && player.cooldown > 0) return;
-    // sprint: brief speed boost and cooldown
-    player.speed = Math.min(player.maxSpeed + 3.0, player.maxSpeed + 2.8);
-    player.cooldown = 3.0; // seconds
-    player.sprintReady = false;
-    sprintVal.textContent = '冷却中 / 대기';
-    playSound('sprint');
-  }
-
-  // main loop
-  function loop(now){
-    raf = requestAnimationFrame(loop);
-    const nowMs = performance.now();
-    const dt = Math.min(40, nowMs - lastFrame) / 16.6667; // normalized
-    lastFrame = nowMs;
-
-    update(dt);
-    renderScene();
-    updateUI();
-    checkEndCondition();
-  }
-
-  function update(dt){
-    if(!running) return;
-    // 时间
-    const elapsed = (performance.now() - raceStartTime) / 1000;
-    timeVal.textContent = elapsed.toFixed(3) + ' s';
-
-    // player control: up accelerates, left/right change lane
-    if(keys['ArrowUp'] || keys['w'] || keys['W']){
-      player.speed = Math.min(player.maxSpeed, player.speed + 0.28 * dt);
-    } else {
-      // natural friction
-      player.speed = Math.max(0, player.speed - 0.05 * dt);
-    }
-    if((keys['ArrowLeft'] || keys['a'] || keys['A'])){
-      player.lane = Math.max(0, player.lane - 1);
-      // prevent continuous move on hold: consume event until keyup; we'll set keys[...] = false to make it immediate-like
-      keys['ArrowLeft'] = keys['a'] = keys['A'] = false;
-    }
-    if((keys['ArrowRight'] || keys['d'] || keys['D'])){
-      player.lane = Math.min(LANES-1, player.lane + 1);
-      keys['ArrowRight'] = keys['d'] = keys['D'] = false;
-    }
-
-    // simple cap of player's x
-    player.x += player.speed * dt;
-    if(player.x > FINISH_X) {
-      player.x = FINISH_X;
-      if(!player.finished){
-        player.finished = true;
-        player.finishTime = (performance.now() - raceStartTime)/1000.0;
-      }
-    }
-
-    // AI behaviors
-    runners.forEach((r, idx) => {
-      if(r.isPlayer) return;
-      // AI will aim for finishing; speed gradually increases
-      if(!r.finished){
-        // base acceleration behavior
-        const toFinish = FINISH_X - r.x;
-        // if close to finish, sometimes do a sprint
-        if(toFinish < 300 && Math.random() < 0.02){
-          r.speed = Math.min(r.maxSpeed + 1.6, r.speed + 0.8);
-        } else {
-          r.speed = Math.min(r.maxSpeed, r.speed + (0.02 + Math.random()*0.03)*dt);
-        }
-        r.x += r.speed * dt;
-        // small random lane change
-        if(Math.random() < 0.002) {
-          r.lane = Math.max(0, Math.min(LANES-1, r.lane + (Math.random()<0.5?-1:1)));
-        }
-        if(r.x >= FINISH_X){
-          r.x = FINISH_X;
-          r.finished = true;
-          r.finishTime = (performance.now() - raceStartTime)/1000.0;
-        }
-      } else {
-        // after finish, slight forward drift
-        r.x += 0.2 * dt;
-      }
-    });
-
-    // update cooldowns
-    runners.forEach(r=>{
-      if(r.cooldown > 0) r.cooldown = Math.max(0, r.cooldown - (dt/60)); // dt normalized, scale down
+  // cooldown updates
+  runners.forEach(r=>{
+    if(r.cooldown && r.cooldown > 0){
+      r.cooldown = Math.max(0, r.cooldown - (dt/60)); // scale to seconds
       if(r.cooldown === 0) r.sprintReady = true;
-    });
+    }
+  });
 
-    // sprint UI update
-    sprintVal.textContent = player.sprintReady ? 'Ready' : (player.cooldown ? (player.cooldown.toFixed(1)+'s') : 'Wait');
+  // sprint UI
+  sprintVal.textContent = p.sprintReady ? 'Ready' : (p.cooldown ? p.cooldown.toFixed(1)+'s' : 'Wait');
 
-    // compute rank by finishTime or x
-    const standings = computeStandings();
-    const playerRank = standings.findIndex(s=>s === player) + 1;
-    rankVal.textContent = playerRank + ' / ' + RUNNERS;
+  // update rank display
+  const standings = computeStandings();
+  const pRank = standings.findIndex(x=>x===p) + 1;
+  rankVal.textContent = pRank + ' / ' + RUNNERS;
+}
+
+function computeStandings(){
+  const arr = runners.slice();
+  arr.sort((a,b)=>{
+    if(a.finished && b.finished) return a.finishTime - b.finishTime;
+    if(a.finished && !b.finished) return -1;
+    if(!a.finished && b.finished) return 1;
+    return b.x - a.x;
+  });
+  return arr;
+}
+
+function checkFinish(){
+  // race ends when all finished or player finished and no others faster
+  const allFinished = runners.every(r=>r.finished);
+  const p = runners[0];
+  if(allFinished) {
+    endRace();
+    return;
   }
-
-  function computeStandings(){
-    // Sort: finished first by time asc; others by x desc
-    const arr = runners.slice();
-    arr.sort((a,b)=>{
-      if(a.finished && b.finished) return a.finishTime - b.finishTime;
-      if(a.finished && !b.finished) return -1;
-      if(!a.finished && b.finished) return 1;
-      return b.x - a.x;
-    });
-    return arr;
-  }
-
-  function checkEndCondition(){
-    // race ends when all finished or player finished and no other runner ahead within small margin
-    const allFinished = runners.every(r=>r.finished);
-    if(allFinished){
-      finishRace();
-    } else if(player.finished){
-      // if player finished and no one finished faster than player => end and player wins
-      const faster = runners.filter(r=> r.finished && r.finishTime < player.finishTime);
-      if(faster.length === 0){
-        finishRace();
-      } else {
-        // if more than half finished, let it end
-        const cntFinished = runners.filter(r=>r.finished).length;
-        if(cntFinished >= Math.ceil(RUNNERS/2)) finishRace();
-      }
+  if(p.finished) {
+    const faster = runners.filter(r=>r.finished && r.finishTime < p.finishTime);
+    if(faster.length === 0) {
+      endRace();
+    } else {
+      const doneCount = runners.filter(r=>r.finished).length;
+      if(doneCount >= Math.ceil(RUNNERS/2)) endRace();
     }
   }
+}
 
-  function finishRace(){
-    if(!running) return;
-    running = false;
-    cancelAnimationFrame(raf);
-    // finalize standings
-    const standings = computeStandings();
-    // compute each runner rank and message
-    const rankNames = standings.map((r,i)=>`${i+1}. ${r.name || (r.isPlayer ? '你 / 당신' : 'AI') } (${r.finished ? r.finishTime.toFixed(3)+'s' : 'DNF'})`);
-    // show modal-like overlay by drawing on canvas
-    renderScene();
-    // show result text area overlay on canvas
-    ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(W/2 - 220, H/2 - 120, 440, 240);
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('比赛结束 / 경기 종료', W/2, H/2 - 80);
-    ctx.font = '14px sans-serif';
-    ctx.textAlign = 'left';
-    for(let i=0;i<Math.min(5, rankNames.length);i++){
-      ctx.fillText(rankNames[i], W/2 - 200, H/2 - 40 + i*28);
-    }
-    ctx.restore();
+function endRace(){
+  if(!running) return;
+  running = false;
+  cancelAnimationFrame(rafId);
 
-    // compute score for player and save to local leaderboard
-    const playerPlace = standings.findIndex(r=>r.isPlayer) + 1;
-    const playerTime = player.finishTime || ((performance.now()-raceStartTime)/1000);
-    const score = computeScore(playerPlace, playerTime);
-    saveToLocalLeaderboard({ name: player.name, score: score, time: Number(playerTime.toFixed(3)), rank: playerPlace, ts: Date.now() });
-    loadLocalLeaderboard();
+  const standings = computeStandings();
+  const resultLines = standings.map((r, idx)=> `${idx+1}. ${r.name} — ${r.finished ? r.finishTime.toFixed(3)+'s' : 'DNF'}`);
 
-    // small auditory feedback
-    playSound(playerPlace === 1 ? 'win' : 'lose');
+  // show modal
+  modalTitle.textContent = '比赛结束 / 경기 종료';
+  modalBody.innerHTML = resultLines.slice(0,6).join('<br>');
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden','false');
 
-    // after short delay allow restart
-    setTimeout(()=> {
-      // draw "再玩一次"按钮 as simple text on canvas; easier to just use window confirm or UI
-      if(confirm((playerPlace === 1 ? '你获得了第一名！再来一局？\n당신이 1위입니다! 다시 하시겠습니까?' : '比赛结束，是否再来一局？\n경기 종료, 다시 하시겠습니까?'))){
-        startRace();
-      }
-    }, 600);
-  }
+  // save player's score to local leaderboard
+  const pRank = standings.findIndex(r=>r.isPlayer) + 1;
+  const pTime = runners[0].finishTime || ((performance.now() - raceStart)/1000);
+  const score = computeScore(pRank, pTime);
+  saveToLocalLeaderboard({name: runners[0].name, score: score, rank: pRank, time: Number(pTime.toFixed(3)), ts: Date.now()});
+  loadLeaderboard();
+}
 
-  function computeScore(rank, time){
-    // higher score better: base from rank + time penalty
-    const base = (RUNNERS - rank + 1) * 3000;
-    const timePenalty = Math.round(time * 120);
-    return Math.max(0, base - timePenalty + Math.floor(Math.random()*50));
-  }
+modalClose.addEventListener('click', ()=>{
+  overlay.style.display = 'none';
+  overlay.setAttribute('aria-hidden','true');
+});
 
-  // ===== rendering =====
-  function renderScene(){
-    // Draw track background and runners
-    ctx.clearRect(0,0,W,H);
-    // background
-    const grad = ctx.createLinearGradient(0,0,0,H);
-    grad.addColorStop(0,'#06202a'); grad.addColorStop(1,'#02111a');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,W,H);
+function computeScore(rank, time){
+  const base = (RUNNERS - rank + 1) * 2500;
+  const penalty = Math.round(time * 100);
+  return Math.max(0, base - penalty + Math.floor(Math.random()*50));
+}
 
-    // draw lanes
-    for(let i=0;i<LANES;i++){
-      const y = i*LANE_H;
-      ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.008)';
-      ctx.fillRect(0,y,W,LANE_H);
-      // lane separator
-      ctx.beginPath();
-      ctx.moveTo(0, y+LANE_H);
-      ctx.lineTo(W, y+LANE_H);
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-      ctx.stroke();
-    }
+/* rendering */
+function render(){
+  // background / lanes
+  ctx.clearRect(0,0,W,H);
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#06202a'); grad.addColorStop(1,'#02111a');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
 
-    // start & finish
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.fillText('START / 출발', START_X - 40, 18);
-
-    // finish flag
-    for(let i=0;i<8;i++){
-      ctx.fillStyle = (i%2===0)?'#fff':'#000';
-      ctx.fillRect(FINISH_X + (i%2===0?0:8), 6, 8, H-12);
-    }
-    ctx.fillStyle = '#fff';
-    ctx.fillText('FINISH / 결승', FINISH_X + 12, 18);
-
-    // draw runners (order: back-to-front by lane maybe)
-    // draw AI and player; we want player visible always so draw AI first then player
-    runners.forEach(r => { if(!r.isPlayer) r.draw(ctx); });
-    player.draw(ctx);
-  }
-
-  function renderStaticScene(){
-    // initial render
-    ctx.fillStyle = '#02111a';
-    ctx.fillRect(0,0,W,H);
-    renderScene();
-  }
-
-  function roundRect(ctx,x,y,w,h,r){
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
+  // lanes
+  for(let i=0;i<LANES;i++){
+    const y = i*LANE_H;
+    ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.008)';
+    ctx.fillRect(0,y,W,LANE_H);
+    // separator
     ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.arcTo(x+w, y, x+w, y+h, r);
-    ctx.arcTo(x+w, y+h, x, y+h, r);
-    ctx.arcTo(x, y+h, x, y, r);
-    ctx.arcTo(x, y, x+w, y, r);
-    ctx.closePath();
+    ctx.moveTo(0,y+LANE_H);
+    ctx.lineTo(W,y+LANE_H);
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.stroke();
   }
 
-  // ===== local leaderboard（localStorage） =====
-  const STORAGE_KEY = 'race_leaderboard_v1';
-  function loadLocalLeaderboard(){
-    let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    // sort by score desc
-    arr.sort((a,b)=>b.score - a.score);
-    // show top 10
-    leaderList.innerHTML = '';
-    if(arr.length === 0){
-      leaderList.innerHTML = '<div class="small">暂无记录 / 기록 없음</div>';
-      return;
+  // start text
+  ctx.fillStyle='#fff'; ctx.font='bold 12px sans-serif';
+  ctx.fillText('START / 출발', START_X - 44, 18);
+
+  // finish stripes
+  for(let i=0;i<10;i++){
+    ctx.fillStyle = (i%2===0)?'#fff':'#000';
+    ctx.fillRect(FINISH_X + (i%2===0?0:8), 6, 8, H-12);
+  }
+  ctx.fillStyle='#fff'; ctx.fillText('FINISH / 결승', FINISH_X + 12, 18);
+
+  // draw runners: draw AI first then player to ensure visibility
+  runners.forEach(r=>{
+    if(!r.isPlayer) drawRunner(r);
+  });
+  drawRunner(runners[0]);
+}
+
+function drawRunner(r){
+  const y = r.lane * LANE_H + LANE_H/2;
+  // shadow
+  ctx.beginPath();
+  ctx.ellipse(r.x + r.width/2, y + r.height/1.6, r.width, r.height*0.6, 0, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fill();
+  // body
+  roundRect(ctx, r.x, y - r.height/2, r.width, r.height, 8);
+  ctx.fillStyle = r.color; ctx.fill();
+  // label
+  ctx.font='12px sans-serif'; ctx.fillStyle='rgba(255,255,255,0.95)'; ctx.textAlign='center';
+  ctx.fillText(r.isPlayer ? r.name : r.name, r.x + r.width/2, y - r.height/1.5);
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  if(w<2*r) r=w/2; if(h<2*r) r=h/2;
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+/* leaderboard localStorage */
+function saveToLocalLeaderboard(rec){
+  let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  arr.push(rec);
+  arr.sort((a,b)=>b.score - a.score);
+  if(arr.length > 200) arr = arr.slice(0,200);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+function loadLeaderboard(){
+  let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  arr.sort((a,b)=>b.score - a.score);
+  leaderList.innerHTML = '';
+  if(arr.length === 0){
+    leaderList.innerHTML = '<div style="color:var(--muted)">暂无记录 / 기록 없음</div>'; return;
+  }
+  arr.slice(0,10).forEach((it,idx)=>{
+    const el = document.createElement('div'); el.className='item';
+    el.innerHTML = `<div class="rank">${idx+1}</div><div class="name">${escapeHtml(it.name)}</div><div class="score">${it.score}</div>`;
+    leaderList.appendChild(el);
+  });
+}
+function resetLeaderboard(){
+  if(confirm('确认清空本地排行榜？（不可恢复）\n로컬 랭킹을 초기화하시겠습니까?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    loadLeaderboard();
+  }
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* controls binding */
+window.addEventListener('keydown',(e)=>{ keys[e.key]=true; if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault(); });
+window.addEventListener('keyup',(e)=>{ keys[e.key]=false; });
+
+startBtn.addEventListener('click', startRace);
+restartBtn.addEventListener('click', resetLeaderboard);
+modalClose.addEventListener('click', ()=>{ overlay.style.display='none'; overlay.setAttribute('aria-hidden','true'); });
+
+// initial setup
+initRace();
+loadLeaderboard();
+
+/* ensure canvas is clickable / responsive for touch: simple taps change lane; double-tap for sprint */
+let lastTap = 0;
+canvas.addEventListener('touchstart', (ev)=>{
+  ev.preventDefault();
+  const t = ev.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const y = t.clientY - rect.top;
+  const half = H/2;
+  if(y < half) runners[0].lane = Math.max(0, runners[0].lane - 1);
+  else runners[0].lane = Math.min(LANES-1, runners[0].lane + 1);
+  const now = performance.now();
+  if(now - lastTap < 300){
+    // sprint
+    if(runners[0].sprintReady){
+      runners[0].speed = Math.min(runners[0].maxSpeed + 3.0, runners[0].speed + 2.4);
+      runners[0].sprintReady=false; runners[0].cooldown=2.5;
     }
-    arr.slice(0,MAX_TOP10).forEach((it, idx)=>{
-      const el = document.createElement('div');
-      el.className = 'item';
-      el.innerHTML = `<div class="rank">${idx+1}</div><div class="pname">${escapeHtml(it.name)}</div><div class="pscore">${it.score}</div>`;
-      leaderList.appendChild(el);
-    });
   }
+  lastTap = now;
+});
 
-  function saveToLocalLeaderboard(record){
-    let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    arr.push(record);
-    // optionally keep only 200 records to avoid bloating
-    if(arr.length > 200) arr = arr.slice(-200);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-  }
-
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
-
-  // ===== sounds (simple) =====
-  const audioCtx = (window.AudioContext || window.webkitAudioContext) ? new (window.AudioContext || window.webkitAudioContext)() : null;
-  function playSound(type){
-    if(!audioCtx) return;
-    if(!soundToggle.checked) return;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    switch(type){
-      case 'win': o.frequency.value = 880; break;
-      case 'lose': o.frequency.value = 220; break;
-      case 'sprint': o.frequency.value = 660; break;
-      default: o.frequency.value = 440;
-    }
-    o.connect(g); g.connect(audioCtx.destination);
-    g.gain.value = 0.0001;
-    o.start();
-    g.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.18);
-    o.stop(audioCtx.currentTime + 0.2);
-  }
-
-  // ===== helper: small animation loop starter =====
-  function updateUI(){ /* handled in update() */ }
-
-  // ===== initial instructions render =====
-  renderStaticScene();
-
-  // ===== optional: auto-start demo if no input for a while (disabled) =====
-  // setTimeout(()=>{ nameInput.value = '游客 / 게스트'; startBtn.click(); }, 30000);
-
-  </script>
+</script>
 </body>
 </html>
